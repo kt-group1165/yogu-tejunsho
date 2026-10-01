@@ -431,17 +431,17 @@ body[data-view="flow"] .wrap, body[data-view="quiz"] .wrap{grid-template-columns
 }
 .aside > div:first-of-type{margin-top:12px}
 .moreb{
-  margin:4px 0 0 16px; padding:1px 9px 2px; cursor:pointer;
-  border:1px solid var(--rule); border-radius:10px; background:transparent;
-  font:inherit; font-family:var(--font-head); font-size:11px; font-weight:500;
-  letter-spacing:.04em; color:var(--ink2);
+  margin:3px 0 0 16px; padding:0 1px; cursor:pointer;
+  border:0; border-bottom:1px dotted var(--accent); background:transparent;
+  font:inherit; font-size:13.5px; font-weight:700; color:var(--accent);
 }
-.moreb:hover{border-color:var(--accent); color:var(--accent)}
-.moreb[aria-expanded="true"]{border-color:var(--accent); color:var(--accent)}
-.mored{margin:4px 0 2px}
-.mored p{
-  margin:0; padding-left:16px; font-size:13px; line-height:1.75; color:var(--ink2);
+.moreb::after{content:"▾"; font-size:9px; margin-left:3px; vertical-align:1px}
+.moreb[aria-expanded="true"]::after{content:"▴"}
+.mored{
+  margin:6px 0 2px 16px; padding:9px 13px;
+  border-left:2px solid var(--accent); background:var(--accent-soft); border-radius:0 2px 2px 0;
 }
+.mored p{margin:0; font-size:13px; line-height:1.75; color:var(--ink2)}
 .mored p + p{margin-top:3px}
 .stuck{margin:20px 0 0}
 .stuck h4, .eyes h4{
@@ -605,7 +605,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 21:14</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 21:18</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -2228,7 +2228,7 @@ function terms(html){
 function bodyHTML(sc, id, state){
   const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
   const more = (x) => (x.d && x.d.length
-    ? '<button class="moreb" type="button" aria-expanded="false">くわしく</button>' +
+    ? '<button class="moreb" type="button" aria-expanded="false">補足</button>' +
       '<div class="mored" hidden>' + x.d.map((t) => '<p>' + esc(t) + '</p>').join('') + '</div>'
     : '');
   let h = '';
@@ -2450,22 +2450,33 @@ function shuffle(a){
 function makeQuiz(n){
   const pool = quizPool();
   const qs = [];
-  /* 誰に聞くかが文中にあると答えが見えるので、前半だけ使い、残るものは出さない */
-  const judge = pool.judge
-    .map((x) => ({ sc: x.sc, a: x.a, q: x.t.split('。')[0] }))
-    .filter((x) => !/営業|CM|事務/.test(x.q));
-  shuffle(judge).slice(0, Math.ceil(n * 0.5)).forEach((x) => {
+  /* 判断の線。1つだけ見せても何の話か分からないので、同じ場面の4つから選ばせる */
+  const strip = (t) => t.split('。')[0];
+  const by = {};
+  pool.judge.forEach((x) => {
+    const t = strip(x.t);
+    if (/営業|CM|事務/.test(t)) return;
+    const o = by[x.sc] || (by[x.sc] = { mine: [], ask: [] });
+    if (o[x.a].indexOf(t) < 0) o[x.a].push(t);
+  });
+  const usable = Object.keys(by).filter((k) => by[k].mine.length >= 2 && by[k].ask.length >= 2);
+  shuffle(usable).slice(0, Math.ceil(n * 0.4)).forEach((sc) => {
+    const want = Math.random() < 0.5 ? 'mine' : 'ask';
+    const other = want === 'mine' ? 'ask' : 'mine';
+    const ok = shuffle(by[sc][want])[0];
+    const bad = shuffle(by[sc][other]).slice(0, 3);
+    const opts = shuffle([ok].concat(bad));
     qs.push({
       kind: '判断の線',
-      scene: x.sc,
-      q: x.q,
-      head: 'これは、自分で決めてよいこと？ それとも確認してから動くこと？',
-      opts: ['自分で決めてよい', '確認してから動く'],
-      ans: x.a === 'mine' ? 0 : 1,
-      why: x.sc + 'の「' + (x.a === 'mine' ? '自分で決めてよい' : '確認してから動く') + '」にある項目',
+      scene: sc,
+      q: want === 'mine' ? 'この中で、自分で決めてよいのはどれ？' : 'この中で、確認してから動くのはどれ？',
+      head: '',
+      opts: opts,
+      ans: opts.indexOf(ok),
+      why: 'どれも' + sc + 'の項目。正解は「' + (want === 'mine' ? '自分で決めてよい' : '確認してから動く') + '」の側、ほかは逆の側にある',
     });
   });
-  shuffle(pool.stuck).slice(0, Math.floor(n * 0.3)).forEach((x) => {
+  shuffle(pool.stuck).slice(0, Math.floor(n * 0.4)).forEach((x) => {
     const others = shuffle(pool.stuck.filter((y) => y.a !== x.a)).slice(0, 3).map((y) => y.a);
     const opts = shuffle([x.a].concat(others));
     qs.push({
