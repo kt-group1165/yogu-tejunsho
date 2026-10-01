@@ -135,7 +135,7 @@ a{color:var(--accent)}
 }
 .scene > header h3{
   font-family:var(--font-head); font-weight:700; font-size:16.5px; margin:0;
-  letter-spacing:.01em; text-wrap:balance;
+  letter-spacing:.01em;
 }
 .scene > header .tag{
   font-size:11px; color:var(--ink2); letter-spacing:.04em; white-space:nowrap;
@@ -186,6 +186,34 @@ a{color:var(--accent)}
 }
 .done .reset:hover{color:var(--ink); border-color:var(--ink2)}
 
+/* ---- 手順の中から呼ぶ共通の工程 ---- */
+.partrow{
+  display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px;
+  padding:9px 0; border-top:1px solid var(--rule2);
+}
+.partrow .mark{
+  font-family:var(--font-head); font-size:11px; font-weight:700; color:var(--accent);
+  border:1px solid var(--accent); border-radius:2px;
+  text-align:center; line-height:20px; height:22px; margin-top:3px;
+}
+.partbtn{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  border:0; background:transparent; padding:2px 0; cursor:pointer;
+  font:inherit; font-family:var(--font-head); font-size:14px; font-weight:700;
+  color:var(--accent); text-align:left;
+}
+.partbtn .po{
+  font-size:11px; font-weight:500; letter-spacing:.04em; color:var(--ink2);
+  border:1px solid var(--rule); border-radius:2px; padding:2px 8px;
+}
+.partbtn:hover .po{border-color:var(--accent); color:var(--accent)}
+.partbox{
+  margin:10px 0 2px; padding:12px 14px; border:1px solid var(--rule);
+  border-left:3px solid var(--accent); border-radius:3px; background:var(--chip);
+}
+.partbox .lead{margin-bottom:10px}
+.partbox .done{border-width:1px}
+
 /* ---- 営業へ返すこと ---- */
 .report{margin:18px 0 0; padding:2px 0 2px 15px; border-left:3px solid var(--accent)}
 .report h4{
@@ -216,21 +244,42 @@ a{color:var(--accent)}
   width:5px; height:5px; border-radius:50%; background:var(--ink2)}
 .judge .ask li::before{background:var(--accent)}
 
+/* ---- 押すと開く用語 ---- */
+.term{
+  border:0; background:transparent; padding:0 1px; font:inherit; cursor:pointer;
+  color:var(--accent); font-weight:700;
+  border-bottom:1px dotted var(--accent);
+}
+.term::after{content:"BE"; font-size:9px; margin-left:3px; vertical-align:1px}
+.term[aria-expanded="true"]::after{content:"B4"}
+.termbox{
+  margin:7px 0 2px; padding:9px 13px; border-left:2px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 2px 2px 0;
+}
+.termbox ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px}
+.termbox li{position:relative; padding-left:13px; font-size:13.5px; line-height:1.7}
+.termbox li::before{content:"FB"; position:absolute; left:0; color:var(--accent)}
+
 /* ---- 詰まったとき ---- */
 .stuck{margin:20px 0 0}
 .stuck h4, .eyes h4{
   font-family:var(--font-head); font-size:12.5px; font-weight:700; margin:0 0 8px;
   letter-spacing:.03em;
 }
-.stuck ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
-.stuck li{
-  display:grid; grid-template-columns:minmax(120px,0.9fr) 20px minmax(0,2.1fr);
-  gap:10px; align-items:start; padding:8px 0; border-top:1px solid var(--rule2);
-  font-size:13.5px; line-height:1.7;
+.stuck ol{list-style:none; margin:0; padding:0}
+.stuck li{border-top:1px solid var(--rule2)}
+.stuckbtn{
+  width:100%; display:flex; align-items:baseline; gap:8px;
+  border:0; background:transparent; padding:9px 0; cursor:pointer;
+  font:inherit; font-size:13.5px; line-height:1.7; color:var(--ink); text-align:left;
 }
-.stuck li:first-child{border-top:1px solid var(--rule2)}
+.stuckbtn .mk{color:var(--accent); font-size:11px; flex:none; transition:transform .15s}
+.stuckbtn[aria-expanded="true"] .mk{transform:rotate(90deg)}
+.stuckbtn[aria-expanded="true"] .case{color:var(--accent)}
 .stuck .case{font-weight:500}
-.stuck .arrow{color:var(--ink2); text-align:center; line-height:1.7}
+.stuck .ans{
+  margin:0; padding:0 0 10px 19px; font-size:13.5px; line-height:1.75; color:var(--ink2);
+}
 
 /* ---- 営業から見ると ---- */
 .eyes{margin:20px 0 0}
@@ -330,6 +379,9 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
   .stuck .case{color:var(--accent)}
 }
 @media (max-width:460px){
+  /* 幅が狭いほど、見出しの文字と余白を詰めて1行に入る量を増やす */
+  .scene > header{padding:12px 13px; gap:3px 9px}
+  .scene > header h3{font-size:15px; letter-spacing:0}
   .top-in{padding:12px 16px}
   .wrap{padding:0 16px; padding-block:20px 56px}
   .body{padding:16px 15px 20px}
@@ -337,6 +389,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
 }
 @media print{
   .top,.index{display:none}
+  .termbox[hidden],.ans[hidden]{display:block!important}
   .wrap{grid-template-columns:1fr; padding:0}
   .scene{break-inside:avoid; border-color:#999}
 }
@@ -348,7 +401,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:06</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:22</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -376,9 +429,9 @@ const SCENES = [
     opts:[{id:"cm",label:"CMから",note:"営業に入り、営業が誰を行かせるか決める。いちばん多い形"},
           {id:"user",label:"利用者・家族から",note:"すでに使っている利用者から直接かかってくる"},
           {id:"sales",label:"営業から",note:"営業が訪問先で拾ってきた話"}]},
-   {id:"fix", label:"商品の指定", inline:true, only:["cm","sales"],
+   {id:"fix", label:"CMから商品の指定", inline:true, only:["cm","sales"],
     opts:[{id:"fixed",label:"ピンポイントの指定",note:"品番まで決まっている。発注して持っていく"},
-          {id:"half",label:"ある程度のイメージがある",note:"種目は決まっているが機種は未定。複数持っていって現場で合わせる"},
+          {id:"half",label:"ある程度のイメージがある",note:"「こういう特徴のもの」「幅広の車いす」のようにざっくりとしたイメージはあるが、機種は未定。複数持っていって現場で合わせる"},
           {id:"vague",label:"決まっていない（困りごとのみ）",note:"候補を想定して持っていく。持っていったもので決まるのがベスト"}]},
    {id:"sched", label:"日程の決まり方", inline:true, only:["cm","sales"],
     opts:[{id:"self",label:"こちらで調整",note:"「そっちで利用者と調整して納品して」と言われた場合"},
@@ -397,23 +450,27 @@ const SCENES = [
    {t:"営業の指示に従い、CMに連絡してプランへの位置づけを確認する。または営業から連絡してもらう", only:["user"],
     m:["プランに載って初めて保険で入れられる。先に動くと自費になる"]},
 
-   {t:"身体状況と家屋の状況を、分かる範囲で聞き取る", only:["user"]},
-   {t:"候補になりうるものを複数想定して積む", only:["user"],
+   {t:"身体状況と家屋の[[状況]]を、分かる範囲で聞き取る", only:["user"]},
+   {t:"候補になりうるものを複数そろえる。社内にないものは卸会社に手配する", only:["user"],
     m:["利用者からの相談で、商品まで決まっていることはない。現場で決める前提で動く"]},
+   {part:"発注を依頼する", only:["user"]},
 
    {axis:"fix"},
 
-   {t:"どういう状況で使うのかを聞き取る", only:["fixed"]},
-   {t:"卸会社に発注し、当日持っていく", only:["fixed"],
+   {t:"どういう[[状況]]で使うのかを聞き取る", only:["fixed"]},
+   {t:"卸会社に手配し、当日持っていく", only:["fixed"],
     m:["聞き取った内容しだいでは、別商品も持っていくか検討する"]},
+   {part:"発注を依頼する", only:["fixed"]},
 
-   {t:"身体状況と家屋の状況を聞き取る", only:["half"]},
-   {t:"候補を複数選んで積む", only:["half"]},
+   {t:"身体状況と家屋の[[状況]]を聞き取る", only:["half"]},
+   {t:"候補を複数そろえる。社内にないものは卸会社に手配する", only:["half"]},
+   {part:"発注を依頼する", only:["half"]},
    {t:"現場で実際に合わせて、その場で決める", only:["half"]},
 
-   {t:"分かる範囲で状況を聞き取る", only:["vague"]},
-   {t:"候補になりうるものを複数想定して積む", only:["vague"],
+   {t:"分かる範囲で[[状況]]を聞き取る", only:["vague"]},
+   {t:"候補になりうるものを複数そろえる。社内にないものは卸会社に手配する", only:["vague"],
     m:["持っていったもので決まるのがベスト。どれも合わなければ、その場で選定し直すことになる"]},
+   {part:"発注を依頼する", only:["vague"]},
 
    {axis:"sched"},
    {t:"利用者に連絡して、訪問の日程を決める", only:["self"],
@@ -483,16 +540,17 @@ const SCENES = [
    {t:"あらかじめ営業担当に、事前の情報があるか確認する。介護度、課題、家屋の状況など",
     m:["情報の多さはケースバイケース。ほとんど何も分からないまま行き、現場で集めることも多い"]},
    {t:"事前情報がある場合は、当たりをつけた用具を選び、車に積む"},
-   {t:"現地にて、起き上がり、立ち上がり、移乗、歩行を中心に身体状況を見る"},
-   {t:"家族の介護状況を確認する"},
+   {t:"現地にて、起き上がり、立ち上がり、移乗、歩行を中心に[[身体状況]]を見る"},
+   {t:"家族の[[介護状況]]を確認する"},
    {t:"段差、動線、廊下幅、トイレ、浴室を見る"},
-   {t:"搬入経路で狭いところがあれば計測する"},
+   {t:"[[搬入経路]]で狭いところがあれば計測する"},
    {t:"レンタルだけでなく、購入や工事が要らないかも見る",
     m:["手すり、段差、入浴まわり。要りそうなら「特定福祉用具販売のとき」「住宅改修のとき」へつなぐ"]},
    {t:"候補を複数挙げ、特徴と価格を伝える"},
    {t:"本人に実際に使ってもらい、その場で高さや角度を合わせる"},
    {t:"選定内容を利用者とCMに伝える"},
-   {t:"退出後、発注を行う", m:["営業には、本人と家族の温度感も添えて返す。誰が決めるのか、家族が乗り気か。営業がCMと話すときに効く"]}],
+   {t:"退出後、発注を行う", m:["営業には、本人と家族の温度感も添えて返す。誰が決めるのか、家族が乗り気か。営業がCMと話すときに効く"]},
+   {part:"発注を依頼する"}],
   done:["身体状況、家族の介護状況、家屋と搬入経路が記録に残っている",
         "レンタル以外に購入や工事が要るかも見てある",
         "複数の候補を、特徴と価格とともに伝えてある",
@@ -523,7 +581,7 @@ const SCENES = [
        "分からないのに「できます」と答える",
        "何もせずに帰り、営業が現場へ確認に行くことになる"]},
 
- {name:"発注を依頼するとき",
+ {name:"発注を依頼する", part:true,
   lead:"卸会社に在庫を押さえ、日程を決め、事務に発注を出すところまで。発注は事務が出す。",
   axes:[
    {id:"kind", label:"案件の種別",
@@ -589,7 +647,8 @@ const SCENES = [
    {t:"ベッド関連は、すき間を点検する"},
    {t:"使用方法を、本人と家族の両方に説明する"},
    {t:"連絡先を見えるところに残す"},
-   {t:"1週間ほどデモで使ってもらい、連絡を差し上げる旨を伝える"},
+   {t:"1週間ほどデモで使ってもらい、連絡を差し上げる旨を伝える",
+    m:["ここで終わりではない。1週間後の適合確認まで自分でやる。やらないと、営業が利用者に確認し直すことになる"]},
    {t:"設置状態を写真に撮る"},
    {t:"家具を戻し、ゴミを持ち帰る"},
    {t:"傷がないか一緒に確認する"},
@@ -615,6 +674,7 @@ const SCENES = [
   bad:["「納品しました」だけで、営業が聞き直すことになる","あとから利用者経由で営業に伝わる","頼まれた分だけやって帰る"]},
 
  {name:"デモから開始が決まるまで",
+  lead:"デモ納品 → 1週間後に適合確認 → 結果を営業へ報告 → 営業からCMへ報告。ここまでが一続き。適合確認まで自分でやれば、営業はCMへ報告するだけで済む。やらなければ、営業が利用者に確認し直すことになり、工程が1つ増える。",
   steps:[
    {t:"デモとして置いてくる", m:["その場で開始が決まることもある。契約書は必ず持っていく"]},
    {t:"1週間を目安に、納品者が電話で使用状況を確認する"},
@@ -623,7 +683,8 @@ const SCENES = [
    {t:"開始が決まったことを事務に伝える"},
    {t:"事務が卸会社に開始を伝える"},
    {t:"事務が個別援助計画書を作る。変更のときは変更契約書も作る"},
-   {t:"利用者から書類を受領する。要る書類は「書類を受領するとき」を見る"},
+   {t:"利用者から書類を受領する"},
+   {part:"書類を受領する"},
    {t:"事務から居宅介護支援事業所へ単位数を報告する"}],
   done:["1週間を目安に使用状況を確認してある","その結果が営業に届いている","開始か中止かが決まっている",
         "開始なら、事務への連絡と書類の受領が済んでいる"],
@@ -639,7 +700,7 @@ const SCENES = [
   good:["デモ後の適合確認まで自分でやり、結果を営業に返す","つながらないとき、時間を変えて何度かかけ、訪問も試してから相談する"],
   bad:["デモを置いたきり確認せず、営業が利用者に聞き直す","1回かけただけで「つながりません」と回す"]},
 
- {name:"書類を受領するとき",
+ {name:"書類を受領する", part:true,
   lead:"新規、追加、一部回収、一式回収で、要る書類が違う。書類を作るのは事務。",
   steps:[
    {t:"種別ごとに要る書類を確認する"},
@@ -680,7 +741,8 @@ const SCENES = [
    {t:"回収日に訪問する"},
    {t:"使用状況を確認する"},
    {t:"回収する"},
-   {t:"書類を受領する。要る書類は「書類を受領するとき」を見る"},
+   {t:"書類を受領する"},
+   {part:"書類を受領する"},
    {t:"営業に報告する。営業からCMに報告する", m:["解約の理由が身体状況の変化なら、そのことも渡す。次の選定の入口になる"]},
    {t:"事務から居宅介護支援事業所へ単位数変更報告書を送る"}]},
 
@@ -703,9 +765,11 @@ const SCENES = [
    {t:"新しい機種を選ぶ"},
    {t:"卸会社に在庫と日程を確認する。利用者と調整して日程を決め、タイムツリーに入力する"},
    {t:"事務に発注を依頼する。同時に解約も依頼する", m:["発注だけ出して解約を忘れると、二重に請求が立つ"]},
+   {part:"発注を依頼する"},
    {t:"事務が変更契約書と個別援助計画書を作る"},
    {t:"入替の日に訪問する。引き上げと設置を同じ日に行う", m:["空白の日を作らない。ベッドを引き上げて次が来ないと、その晩に寝る場所がなくなる"]},
-   {t:"書類を受領する。要る書類は「書類を受領するとき」を見る"},
+   {t:"書類を受領する"},
+   {part:"書類を受領する"},
    {t:"退室後、営業に報告する。営業からCMに報告する"},
    {t:"事務から居宅介護支援事業所へ単位数変更報告書を送る"}]},
 
@@ -789,6 +853,31 @@ const SCENES = [
    {t:"事後申請の書類を出す"}]}
 ];
 
+/* 手順の中の [[用語]] を押すと開く説明。定義はここ1か所だけ */
+const TERMS = {
+  '状況': ['いつから困っているか',
+           'いま誰が、どうやって介助しているか',
+           '何ができなくて、何ができるか',
+           '家の中のどこで困るか',
+           '退院や退所の予定があるか'],
+  '身体状況': ['起き上がり。どこに手をついて起きるか',
+               '立ち上がり。何につかまるか',
+               '移乗。ベッドから車いす、トイレへの移り方',
+               '歩行。何メートル歩けるか、何を使うか',
+               '座位が安定しているか',
+               '痛みやしびれ、麻痺のある側'],
+  '介護状況': ['主に介助するのは誰か',
+               '日中は誰が家にいるか',
+               '介助する人の体力と身長',
+               '夜間はどうしているか',
+               '他に入っているサービス'],
+  '搬入経路': ['玄関の幅と段差',
+               '廊下の幅と、曲がり角',
+               '階段、エレベーター',
+               '部屋の入口の幅',
+               '車を停める場所から玄関までの距離'],
+};
+
 const esc = (s) => s.replace(/[&<>]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const nameToId = new Map(SCENES.map((s, i) => [s.name, 's' + (i + 1)]));
 
@@ -839,6 +928,20 @@ const allText = (sc) => [sc.name, sc.lead || '']
   .concat((sc.axes || []).flatMap((a) => a.opts.map((o) => o.label + ' ' + o.note)))
   .join(' ').replace(/\s+/g, ' ');
 
+/* [[用語]] をボタンにして、説明の箱を同じ行の下にぶら下げる */
+function terms(html){
+  const keys = [];
+  const out = html.replace(/\[\[(.+?)\]\]/g, (m, k) => {
+    keys.push(k);
+    return '<button class="term" type="button" data-t="' + esc(k) + '" aria-expanded="false">' +
+      esc(k) + '</button>';
+  });
+  const boxes = keys.filter((k) => TERMS[k]).map((k) =>
+    '<div class="termbox" data-t="' + esc(k) + '" hidden><ul>' +
+    TERMS[k].map((v) => '<li>' + esc(v) + '</li>').join('') + '</ul></div>').join('');
+  return out + '</p>' + boxes;
+}
+
 function bodyHTML(sc, id, state){
   const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
   let h = '';
@@ -875,9 +978,18 @@ function bodyHTML(sc, id, state){
       if (ax && axisOn(sc, ax, state)) h += axisRow(ax);
       return;
     }
+    if (s.part) {
+      if (!keep(sc, s, state)) return;
+      const pi = SCENES.findIndex((x) => x.name === s.part);
+      h += '<div class="partrow"><span class="mark" aria-hidden="true">＋</span><div>' +
+        '<button class="partbtn" type="button" data-part="' + pi + '" aria-expanded="false">' +
+        esc(s.part) + '<span class="po">ここで開く</span></button>' +
+        '<div class="partbox" hidden></div></div></div>';
+      return;
+    }
     if (!keep(sc, s, state)) return;
     n++;
-    h += '<div class="step"><span class="num">' + n + '</span><div><p>' + link(esc(s.t)) + '</p>' +
+    h += '<div class="step"><span class="num">' + n + '</span><div><p>' + terms(link(esc(s.t))) +
       (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></div>';
   });
   h += '</div>';
@@ -907,8 +1019,9 @@ function bodyHTML(sc, id, state){
     .filter((x) => keep(sc, x, state));
   if (stuck.length) {
     h += '<div class="stuck"><h4>詰まったとき</h4><ol>' +
-      stuck.map((x) => '<li><span class="case">' + esc(x.c) + '</span>' +
-        '<span class="arrow" aria-hidden="true">▶</span><span>' + esc(x.a) + '</span></li>').join('') +
+      stuck.map((x) => '<li><button class="stuckbtn" type="button" aria-expanded="false">' +
+        '<span class="mk" aria-hidden="true">▸</span><span class="case">' + esc(x.c) + '</span></button>' +
+        '<p class="ans" hidden>' + esc(x.a) + '</p></li>').join('') +
       '</ol></div>';
   }
   const good = pick(sc.good), bad = pick(sc.bad);
@@ -928,13 +1041,18 @@ function hash(s){ let n = 0; for (let i = 0; i < s.length; i++) n = (n * 31 + s.
 
 /* 目次はカテゴリに分ける。狭い画面では開閉し、広い画面では開いたまま並べる */
 const CATS = [
-  { name: '用具を入れる', n: [1, 2, 3, 4, 5, 6] },
+  { name: '用具を入れる', n: [1, 2, 4, 5] },
   { name: '使っている間', n: [7, 10, 11, 12] },
   { name: '用具を引き上げる', n: [8, 9] },
   { name: '毎月の仕事', n: [13, 14] },
   { name: '事故と苦情', n: [15, 16] },
   { name: '販売と住宅改修', n: [17, 18] },
+  { name: '共通の工程', n: [3, 6] },
 ];
+/* 番号は場面だけに振る。共通の工程は番号なし */
+const DISP = {};
+let dn = 0;
+SCENES.forEach((sc, i) => { if (!sc.part) { dn++; DISP[i + 1] = dn; } });
 CATS.forEach((c) => {
   const li = document.createElement('li');
   li.className = 'cat';   // 最初は畳んでおく。広い画面では CSS で開いて見せる
@@ -943,8 +1061,8 @@ CATS.forEach((c) => {
     '<span class="count">' + c.n.length + '</span></button>' +
     '<ol class="catlist">' + c.n.map((k) => {
       const sc = SCENES[k - 1];
-      return '<li><a href="#s' + k + '" data-id="s' + k + '"><em>' + k + '</em><span>' +
-        esc(sc.name) + '</span></a></li>';
+      return '<li><a href="#s' + k + '" data-id="s' + k + '"><em>' +
+        (DISP[k] || '共通') + '</em><span>' + esc(sc.name) + '</span></a></li>';
     }).join('') + '</ol>';
   toc.appendChild(li);
 });
@@ -963,17 +1081,44 @@ SCENES.forEach((sc, i) => {
   el.className = 'scene';
   el.id = id;
   el.dataset.text = allText(sc);
-  el.innerHTML = '<header><span class="n">' + (i + 1) + '</span><h3>' + esc(sc.name) + '</h3>' +
-    (sc.axes ? '<span class="tag">場合で切り替え</span>' :
-      (sc.done && sc.done.length ? '' : '<span class="tag">手順のみ</span>')) +
+  el.innerHTML = '<header><span class="n">' + (DISP[i + 1] || '共通') + '</span><h3>' + esc(sc.name) + '</h3>' +
+    (sc.part ? '<span class="tag">いくつかの場面から呼ばれる</span>' :
+      (sc.axes ? '<span class="tag">場合で切り替え</span>' :
+      (sc.done && sc.done.length ? '' : '<span class="tag">手順のみ</span>'))) +
     '</header><div class="body"></div>';
   const body = el.querySelector('.body');
   const state = {};
   (sc.axes || []).forEach((ax) => { state[ax.id] = ax.opts[0].id; });
   body.innerHTML = bodyHTML(sc, id, state);
   body.addEventListener('click', (e) => {
+    const pb = e.target.closest('.partbtn');
+    if (pb) {
+      const box = pb.nextElementSibling;
+      const open = box.hidden;
+      if (open && !box.dataset.done) {
+        const psc = SCENES[+pb.dataset.part];
+        const pst = {};
+        (psc.axes || []).forEach((ax) => { pst[ax.id] = ax.opts[0].id; });
+        box.innerHTML = bodyHTML(psc, 'p' + pb.dataset.part + '-' + id, pst);
+        box.dataset.done = '1';
+        box.addEventListener('click', (ev) => {
+          const ab = ev.target.closest('.routes button');
+          if (!ab) return;
+          ev.stopPropagation();
+          pst[ab.dataset.ax] = ab.dataset.r;
+          box.innerHTML = bodyHTML(psc, 'p' + pb.dataset.part + '-' + id, pst);
+          restoreChecks(box);
+        });
+        restoreChecks(box);
+      }
+      box.hidden = !open;
+      pb.setAttribute('aria-expanded', String(open));
+      pb.querySelector('.po').textContent = open ? '閉じる' : 'ここで開く';
+      return;
+    }
     const b = e.target.closest('.routes button');
     if (!b) return;
+    if (e.target.closest('.partbox')) return;
     state[b.dataset.ax] = b.dataset.r;
     body.innerHTML = bodyHTML(sc, id, state);
     restoreChecks(body);
@@ -995,6 +1140,27 @@ function restoreChecks(root){
   });
 }
 restoreChecks(document);
+/* 用語と、詰まったときの開閉。あとから描き直しても効くように main でまとめて受ける */
+main.addEventListener('click', (e) => {
+  const t = e.target.closest('.term');
+  if (t) {
+    const row = t.closest('.step, .axrow, .partrow');
+    const box = row && row.querySelector('.termbox[data-t="' + t.dataset.t + '"]');
+    if (box) {
+      box.hidden = !box.hidden;
+      t.setAttribute('aria-expanded', String(!box.hidden));
+    }
+    return;
+  }
+  const sb = e.target.closest('.stuckbtn');
+  if (sb) {
+    const ans = sb.nextElementSibling;
+    ans.hidden = !ans.hidden;
+    sb.setAttribute('aria-expanded', String(!ans.hidden));
+    return;
+  }
+});
+
 main.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-reset]');
   if (!btn) return;
