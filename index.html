@@ -517,7 +517,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 20:41</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 20:49</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -643,11 +643,10 @@ const SCENES = [
    {sec:"営業に返す", only:["cm"]},
    {t:"担当営業に報告する。聞き取った内容と、決まった日程を伝える", only:["cm"]},
    {t:"この案件で[[気をつけること]]がないか、営業に確認する", only:["cm"]}],
-  done:[{t:"どの利用者の、何の話かが手元にある"},
+  done:[{t:"聞き取った内容を営業に報告してある"},
         {t:"いつまでに必要かを聞いてある"},
         {t:"訪問の日程がタイムツリーに入っている"},
-        {t:"担当営業に話が入っている", only:["user"]},
-        {t:"動く前に、担当営業へ報告し、留意点を確認してある", only:["cm"]},
+        {t:"動く前に、留意点を営業に確認してある", only:["cm"]},
         {t:"CMへ誰が連絡するかが決まっている", only:["user"]},
         {t:"CMの了解が取れている", only:["user"]},
         {t:"持っていく商品が決まり、発注が出ている", only:["fixed"]},
@@ -734,6 +733,7 @@ const SCENES = [
            d:"例：介助バーを付けた。自分の力で立てるが、つかまるところがないため。ベッドは3モーターではなく2モーターで足りると判断した"},
           {t:"本人と家族の温度感。誰が決めるのか",
            d:"例：本人は「そこまで要らない」と言うが、奥さまが強く希望。決めるのは同居の長男。来週帰ってくるので、それまで返事待ち"},
+          {t:"何が分かっていて、何が分からないか", d:"分けて伝える。「分かりません」だけだと、営業が現場へ行くことになる"},
           {t:"分からなかったこと、持ち帰ったこと",
            d:"例：浴室の手すりを聞かれたが、工事が要るかどうか判断できなかった。写真を撮って持ち帰り、明日までに返すと伝えてある"},
           {t:"次に自分が何をするか、いつやるか",
@@ -977,7 +977,8 @@ const SCENES = [
           {t:"身体状況の変化と、次の提案につながりそうなこと",
            d:"例：立ち上がりに時間がかかるようになった。半年後には介助バーだけでは足りないかもしれない"},
           {t:"交換が要るなら、いつ行くか",
-           d:"例：マットレスがへたっていたので交換。◯月◯日の午後で日程を取った"}],
+           d:"例：マットレスがへたっていたので交換。◯月◯日の午後で日程を取った"},
+          {t:"分かったことと、分からないままのこと", d:"分けて伝える。「分かりません」だけだと、営業が現場へ行くことになる"}],
   mine:["高さや角度の調整","ネジの締め直しなど、その場で直せること"],
   ask:["用具を替えたほうがよいと思ったとき。営業に相談する",
        "使われていないので解約したほうがよいとき。営業とCMに相談する"],
@@ -1250,6 +1251,7 @@ const SCENES = [
         {t:"営業に報告してある"},
         {t:"動く前に、担当営業へ報告し、留意点を確認してある", only:["cm","low"]}],
   report:[{t:"何が、どう壊れていたか"},
+          {t:"分かったことと、分からないままのこと", d:"分けて伝える。「分かりません」だけだと、営業が現場へ行くことになる"},
           {t:"その場で直したか、交換したか"},
           {t:"使い方に原因がありそうなら、そのこと"},
           {t:"CMから直接来たということ", only:["cm"]}],
@@ -1381,12 +1383,15 @@ const SCENES = [
    {sec:"報告と記録"},
    {t:"その日のうちに営業に報告し、指示を仰ぐ"},
    {t:"所定の様式で報告書を作る"},
-   {t:"事業所で保管する"}],
+   {t:"事業所で保管する"},
+   {t:"同じことが起きないように、やり方を変えるところがないかを営業と話す",
+    m:["書いて終わりにしない。次に変えることを1つ決める"]}],
   done:[{t:"けがの有無を確かめてある"},
         {t:"現場を写真に残してある"},
         {t:"その日のうちに営業に報告し、指示を仰いである"},
         {t:"所定の様式で報告書を作ってある"},
         {t:"事業所で保管してある"},
+        {t:"次に変えることを1つ決めてある"},
         {t:"その日のうちに現場を見に行ってある", only:["call"]}],
   report:[{t:"何が起きたか"},
           {t:"けがの有無"},
@@ -1419,8 +1424,11 @@ const SCENES = [
    {t:"その場で応じることと、持ち帰ることを分ける"},
    {t:"いつまでに返すかを伝える"},
    {t:"営業に報告し、指示を仰ぐ"},
-   {t:"対応の記録を残す"}],
+   {t:"対応の記録を残す"},
+   {t:"同じ苦情が出ないように、やり方を変えるところがないかを営業と話す",
+    m:["謝って終わりにしない。次に変えることを1つ決める"]}],
   done:["最後まで聞いてある",
+        "次に変えることを1つ決めてある",
         "いつまでに返すかを伝えてある",
         "営業に報告し、指示を仰いである",
         "対応の記録を残してある"],
@@ -1613,6 +1621,7 @@ const SCENES = [
         {t:"用具に関わる話が出たかどうかを、営業に返してある", only:["other"]},
         {t:"使えなくなる用具がないかを、調べて臨んである", only:["renew"]}],
   report:[{t:"会議で決まったこと"},
+          {t:"答えられたことと、持ち帰ったこと", d:"分けて伝える。「分かりません」だけだと、営業が現場へ行くことになる"},
           {t:"用具について出た意見"},
           {t:"自分の宿題と、いつまでにやるか"},
           {t:"利用者と家族の様子"},
@@ -2181,6 +2190,16 @@ function bodyHTML(sc, id, state){
         esc(d.t) + '</span></label></li>').join('') +
       '</ul><button class="reset" type="button" data-reset="' + id + '">チェックを消す</button></div>';
   }
+  const miss = (sc.miss || [])
+    .map((x) => (Array.isArray(x) ? { m: x[0], r: x[1] } : x))
+    .filter((x) => keep(sc, x, state));
+  if (miss.length) {
+    h += '<div class="miss"><h4>よくある失敗<span>押すと、そうなるとどうなるかが出る</span></h4><ol>' +
+      miss.map((x) => '<li><button class="missbtn" type="button" aria-expanded="false">' +
+        '<span class="mk" aria-hidden="true">×</span><span class="mt">' + esc(x.m) + '</span></button>' +
+        '<p class="mr" hidden>' + esc(x.r) + '</p></li>').join('') +
+      '</ol></div>';
+  }
   const report = pick(sc.report);
   if (report.length) {
     const anyd = report.some((x) => x.d);
@@ -2207,16 +2226,6 @@ function bodyHTML(sc, id, state){
       stuck.map((x) => '<li><button class="stuckbtn" type="button" aria-expanded="false">' +
         '<span class="mk" aria-hidden="true">▸</span><span class="case">' + esc(x.c) + '</span></button>' +
         '<p class="ans" hidden>' + esc(x.a) + '</p></li>').join('') +
-      '</ol></div>';
-  }
-  const miss = (sc.miss || [])
-    .map((x) => (Array.isArray(x) ? { m: x[0], r: x[1] } : x))
-    .filter((x) => keep(sc, x, state));
-  if (miss.length) {
-    h += '<div class="miss"><h4>よくある失敗<span>押すと、そうなるとどうなるかが出る</span></h4><ol>' +
-      miss.map((x) => '<li><button class="missbtn" type="button" aria-expanded="false">' +
-        '<span class="mk" aria-hidden="true">×</span><span class="mt">' + esc(x.m) + '</span></button>' +
-        '<p class="mr" hidden>' + esc(x.r) + '</p></li>').join('') +
       '</ol></div>';
   }
   const good = pick(sc.good), bad = pick(sc.bad);
