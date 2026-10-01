@@ -421,9 +421,21 @@ body[data-view="flow"] .wrap, body[data-view="quiz"] .wrap{grid-template-columns
   display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
 }
 .stepsh span, .asideh span{font-weight:500; font-size:11.5px; color:var(--ink2); letter-spacing:.02em}
+.asidebtn{
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+  width:calc(100% + 40px); margin:24px -20px 0; padding:11px 20px;
+  border:0; border-top:1px solid var(--rule); background:var(--paper);
+  cursor:pointer; text-align:left;
+  font:inherit; font-family:var(--font-head); font-size:13px; font-weight:700; color:var(--ink2);
+}
+.asidebtn::before{content:"▾"; font-size:10px; color:var(--accent); transition:transform .15s}
+.asidebtn[aria-expanded="true"]::before{transform:rotate(180deg)}
+.asidebtn:hover{color:var(--accent)}
+.asidebtn span{font-weight:400; font-size:11px; letter-spacing:.02em; color:var(--ink2); opacity:.85}
+.asidebtn[aria-expanded="true"]{border-bottom:0}
 .aside{
-  margin:28px -20px 0; padding:16px 20px 2px;
-  border-top:1px solid var(--rule); background:var(--paper);
+  margin:0 -20px; padding:4px 20px 2px;
+  background:var(--paper);
 }
 .asideh{
   font-family:var(--font-head); font-size:13px; font-weight:700; margin:0 0 2px; color:var(--ink2);
@@ -587,7 +599,8 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
   .wrap{padding:0 16px; padding-block:20px 56px}
   .body{padding:16px 15px 20px}
   .scene > header{padding:12px 15px}
-  .aside{margin:24px -15px 0; padding:14px 15px 2px}
+  .asidebtn{width:calc(100% + 30px); margin:20px -15px 0; padding:10px 15px}
+  .aside{margin:0 -15px; padding:4px 15px 2px}
   .axrow, .partrow{padding-left:28px; padding-right:10px}
   .routes.small button{font-size:11.5px; padding:3px 8px}
 }
@@ -605,7 +618,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 21:18</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 22:02</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -1011,19 +1024,24 @@ const SCENES = [
    {sec:"アポ取り"},
    {t:"予定時期を管理する"},
    {t:"利用者に電話し、訪問の日程を調整する。その際、[[気になる点]]があればあらかじめ聞き、交換品を用意しておく"},
-   {t:"何度かけてもつながらないときは、近くに行く日に[[突撃訪問]]する",
-    m:["電話だけで止めない。1、2回かけただけで営業に回さない"]},
-   {t:"モニタリングと同時に交換品を持っていくときには、事務に発注を依頼する",
-    d:["軽いものは自分で積んでいく。重いものは卸会社に来てもらうので、訪問の日程を合わせる"]},
+   {t:"つながらないときは、ケアプランを見て、いつなら家にいるかを確認する"},
+   {t:"電話する時間と曜日をずらして、かけ直す",
+    m:["1、2回かけただけで営業に回さない"],
+    d:["朝、昼、夕方で出やすさが違う",
+       "デイやリハビリの曜日は、そもそも家にいない",
+       "家族が帰っている時間帯も試す"]},
+   {t:"5回ずらしても出ないときは、営業に[[突撃訪問]]してよいか承諾を取る",
+    m:["黙って行かない。承諾を取ってから行く"]},
+   {t:"承諾が取れたら、近くに行く日に合わせて訪問する"},
+   {t:"モニタリングと同時に[[交換品]]を持っていくときには、事務に発注を依頼する"},
    {part:"発注を依頼する"},
    {t:"タイムツリーに入力する",
     m:["自分が動く予定は自分で入れる。入っていないと、営業からは止まって見える"]},
    {sec:"訪問時"},
    {t:"[[使用状況|使用状況（前回と比べて）]]を前回と比べて確認する"},
-   {t:"用具を動かして[[点検]]する"},
-   {t:"利用者にも、不具合や[[困りごと]]がないか確認する"},
-   {t:"不具合があれば、その場で対応する"},
-   {t:"その場で直らなければ、メンテナンス交換を手配する",
+   {t:"用具を動かしたり、使ってもらったりして[[点検]]する"},
+   {t:"利用者にも、[[不具合]]や[[困りごと]]がないか確認する"},
+   {t:"不具合があれば、その場で対応する。直らなければメンテナンス交換を手配する",
     m:["聞いていなかった不具合は、ここで出る。持ってきていなければ、もう一度行くことになる"]},
    {t:"その場で卸会社に電話して在庫と動ける日を確認し、交換の日程を利用者と決める",
     m:["利用者の目の前で、在庫も日程も押さえる。持ち帰ると、つながらない、都合が合わないで日が延びる"]},
@@ -1066,13 +1084,15 @@ const SCENES = [
           {t:"交換が要るなら、いつ行くか",
            d:"例：マットレスがへたっていたので交換。◯月◯日の午後で日程を取った"},
           {t:"分かったことと、分からないままのこと", d:"分けて伝える。「分かりません」だけだと、営業が現場へ行くことになる"}],
-  mine:["高さや角度の調整","ネジの締め直しなど、その場で直せること","回る順番。同じ地域はまとめて組む"],
-  ask:["用具を替えたほうがよいと思ったとき。営業に相談する",
+  mine:["高さや角度の調整","ネジの締め直しなど、その場で直せること","回る順番。同じ地域はまとめて組む",
+        "電話する時間と曜日をずらすこと"],
+  ask:["突撃訪問してよいかどうか。営業の承諾を取る",
+       "用具を替えたほうがよいと思ったとき。営業に相談する",
        "使われていないので解約したほうがよいとき。営業とCMに相談する"],
-  stuck:[["電話がつながらない","時間帯を変えて、日も変えてかけ直す。朝と夕方では出やすさが違う"],
-         ["何度かけてもつながらない","近くに行く日に合わせて訪問する。会えなければ、連絡先と伺った旨を残してくる"],
+  stuck:[["電話がつながらない","ケアプランを見て、いつ家にいるかを調べる。そのうえで時間と曜日をずらしてかけ直す"],
+         ["5回ずらしても出ない","営業に承諾を取ってから、突撃訪問する。黙って行かない"],
          ["突撃訪問で、嫌な顔をされた","「もうやらない」で終わらせない。アポを取った訪問と同じ入り方ではうまくいかない。最初の一言、時間帯、立ち位置のどれかを変えて、次に試す"],
-         ["訪問しても会えない。期限が近い","そこまでやってから営業に相談する。何をどこまでやったかを添えて渡す"],
+         ["訪問しても会えない。期限が近い","そこまでやったことを添えて、営業に相談する。何回、いつかけたかまで伝える"],
          ["月内に終わりそうにない","早めに営業に言う。黙って遅らせない"],
          ["不具合がその場で直らない","交換を手配する。使えない状態なら代替機を先に置く"],
          ["その場で卸会社につながらない","利用者から候補日を2つ3つもらってから帰る。手ぶらで帰ると、調整に何日もかかる"],
@@ -1082,7 +1102,8 @@ const SCENES = [
   good:["その月のぶんを月内に終わらせる","身体状況の変化を営業に渡す"],
   miss:[
    ["気になる点を聞かずに訪問する","交換品を持っておらず、もう一度行くことになる"],
-   ["1、2回電話してつながらないだけで、営業に回す","営業からは「そこまでしかやっていない」に見える。時間帯を変え、訪問も試してから相談する"],
+   ["1、2回電話してつながらないだけで、営業に回す","営業からは「そこまでしかやっていない」に見える。時間と曜日をずらして、何度かかけてから相談する"],
+   ["承諾を取らずに突撃訪問する","アポなしで行くのは通常の訪問と別もの。先に営業の承諾を取る"],
    ["利用者から「もう使わない」と言われ、その場で引き上げてしまう","CMが「まだ置いておいてほしかった」ということがある。一度引き上げると、もう一度入れるのは難しい。先にCMへ確認する"],
    ["「変化なし」とだけ報告する","営業は何も判断できない。前回と何を比べたのかを書く"],
    ["不具合を見つけたのに、交換日を決めずに帰る","帰ってからの電話がつながらず、日が延びる"],
@@ -1994,12 +2015,26 @@ const SCENES = [
 
 /* 手順の中の [[用語]] を押すと開く説明。定義はここ1か所だけ */
 const TERMS = {
-  '突撃訪問': ['アポを取った訪問とは別もの。同じ入り方ではうまくいかない',
+  '交換品': ['軽いものは自分で積んでいく。杖、歩行器、クッションなど',
+             '重いものは卸会社に来てもらう。マットレス、ベッド、車いすなど',
+             '卸会社に来てもらうときは、訪問の日程を合わせておく',
+             '用意していけば1回で終わる。用意していなければ、もう一度行くことになる'],
+  '不具合': ['ネジやボルトのゆるみ、がたつき',
+             'フレームやパイプの変形、曲がり',
+             'ブレーキの効きが悪い。止まらない、戻らない',
+             'キャスターが回らない。まっすぐ進まない。髪やほこりの巻き込み',
+             '電動が動かない。途中で止まる。いつもと違う音がする',
+             'リモコンのボタンが効かない。コードの傷み',
+             'マットレスやクッションのへたり、底づき',
+             '布地の破れ、ほつれ、汚れ',
+             '杖や歩行器のゴム先のすり減り',
+             'タイヤの空気が抜けている'],
+  '突撃訪問': ['アポを取らずに伺うこと。通常の訪問とは別もの。同じ入り方ではうまくいかない',
+               '行く前に、営業の承諾を取る。黙って行かない',
                '近くに行く日に合わせる。そのためだけに出ない',
                '会えなければ、連絡先と伺った旨を残してくる',
                'うまくいかなかったときは、最初の一言、時間帯、立ち位置のどれを変えるかを考える',
-               '一度嫌な顔をされても「もうやらない」で終わらせない。やり方を変えて次に試す',
-               'ここまでやってから相談すると、営業も動きやすい'],
+               '一度嫌な顔をされても「もうやらない」で終わらせない。やり方を変えて次に試す'],
   '負担額': ['毎月いくらになるか。1割か2割かでも変わる',
              '用具としての良し悪しだけで選ばない。CMのプランの意向と、利用者の負担も一緒に見る',
              '例：長いスロープのほうが楽に上げられるが、長くなるほど負担額も上がる。許容できる長さで足りることがある',
@@ -2107,7 +2142,9 @@ const TERMS = {
                '介助する家族の負担が増えていないか',
                'いまの用具で、使いにくいところはないか',
                '用具の不具合と違って、生活の変化は聞かないと出てこない。ここで出た話が、次の選定の入口になる'],
-  '点検': ['ベッド関連は、すき間を見る。手やからだが挟まる事故につながる',
+  '点検': ['見るだけで終わらせない。実際に動かす',
+           '本人に使ってもらって、動きを見る。使い方の癖もここで分かる',
+           'ベッド関連は、すき間を見る。手やからだが挟まる事故につながる',
            'マットレスのへたり',
            '車いすのクッションのへたり',
            'キャスターの動き。髪やほこりの巻き込み',
@@ -2225,6 +2262,9 @@ function terms(html){
   return out + '</p>' + boxes;
 }
 
+let ASIDE = false;
+try { ASIDE = localStorage.getItem('tejun-aside') === '1'; } catch (e) {}
+
 function bodyHTML(sc, id, state){
   const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
   const more = (x) => (x.d && x.d.length
@@ -2301,8 +2341,10 @@ function bodyHTML(sc, id, state){
       (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + more(s) + '</div></div>';
   });
   h += '</div>';
-  h += '<div class="aside">' + (sc.steps.length
-    ? '<h4 class="asideh">この場面について<span>手順のほかに、押さえておくこと</span></h4>' : '');
+  h += (sc.steps.length
+    ? '<button class="asidebtn" type="button" aria-expanded="' + (ASIDE ? 'true' : 'false') + '">' +
+      'この場面について<span>完了の条件、よくある失敗、営業へ返すこと、判断の線、詰まったとき</span></button>' : '') +
+    '<div class="aside"' + (sc.steps.length && !ASIDE ? ' hidden' : '') + '>';
 
   const done = pick(sc.done);
   if (done.length) {
@@ -2609,6 +2651,18 @@ SCENES.forEach((sc, i) => {
       box.hidden = !open;
       pb.setAttribute('aria-expanded', String(open));
       pb.querySelector('.po').textContent = open ? '閉じる' : 'ここで開く';
+      return;
+    }
+    const ab = e.target.closest('.asidebtn');
+    if (ab) {
+      ASIDE = ab.getAttribute('aria-expanded') !== 'true';
+      try { localStorage.setItem('tejun-aside', ASIDE ? '1' : '0'); } catch (err) {}
+      document.querySelectorAll('.asidebtn').forEach((x) => {
+        x.setAttribute('aria-expanded', String(ASIDE));
+        const box = x.nextElementSibling;
+        if (box && box.classList.contains('aside')) box.hidden = !ASIDE;
+      });
+      if (!ASIDE) ab.closest('.scene').scrollIntoView({ block: 'nearest' });
       return;
     }
     const b = e.target.closest('.routes button');
