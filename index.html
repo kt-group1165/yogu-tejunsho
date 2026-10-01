@@ -213,8 +213,14 @@ a{color:var(--accent)}
 .eyes dd{margin:0; padding:5px 0; font-size:13.5px; line-height:1.7}
 .eyes dd.bad{color:var(--warn)}
 
-/* ---- 経路の切り替え ---- */
-.routes{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 8px}
+/* ---- 場合の切り替え ---- */
+.axes{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px 22px;
+  margin:0 0 16px; padding:12px 14px 10px; border:1px solid var(--rule); border-radius:3px;
+  background:var(--chip)}
+.axis{min-width:0}
+.axislabel{display:block; font-family:var(--font-head); font-size:11px; font-weight:700;
+  letter-spacing:.1em; color:var(--ink2); margin-bottom:6px}
+.routes{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 6px}
 .routes button{
   font:inherit; font-family:var(--font-head); font-size:12.5px; font-weight:500;
   padding:5px 12px; border:1px solid var(--rule); background:var(--surface); color:var(--ink2);
@@ -222,7 +228,7 @@ a{color:var(--accent)}
 }
 .routes button:hover{border-color:var(--ink2); color:var(--ink)}
 .routes button.on{background:var(--accent); border-color:var(--accent); color:var(--surface); font-weight:700}
-.routenote{margin:0 0 14px; font-size:12.5px; color:var(--ink2)}
+.routenote{margin:0; font-size:12.5px; color:var(--ink2); line-height:1.65}
 .only{
   display:inline-block; margin-left:7px; padding:1px 7px; border-radius:2px;
   background:var(--accent-soft); color:var(--accent);
@@ -292,52 +298,79 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
 const SCENES = [
  {name:"納品の依頼があったとき（追加納品の場合）",
   lead:"すでに使っている利用者に、用具を足す話。どこから来たかで最初にやることが変わる。",
-  routes:[{id:"cm",label:"ケアマネジャーから",note:"営業に入り、営業が誰を行かせるか決める。いちばん多い形"},
-          {id:"user",label:"利用者・家族から",note:"すでに使っている利用者から直接かかってくる。新規ではなく追加の納品になる"},
-          {id:"sales",label:"営業から",note:"営業が訪問先で拾ってきた話"}],
+  axes:[
+   {id:"from", label:"依頼の出どころ",
+    opts:[{id:"cm",label:"ケアマネジャーから",note:"営業に入り、営業が誰を行かせるか決める。いちばん多い形"},
+          {id:"user",label:"利用者・家族から",note:"すでに使っている利用者から直接かかってくる"},
+          {id:"sales",label:"営業から",note:"営業が訪問先で拾ってきた話"}]},
+   {id:"fix", label:"商品の決まり具合",
+    opts:[{id:"fixed",label:"決まっている",note:"品番まで決まっている。発注して持っていく"},
+          {id:"half",label:"ある程度決まっている",note:"種目は決まっているが機種は未定。複数持っていって現場で合わせる"},
+          {id:"vague",label:"ざっくりしか分からない",note:"候補を想定して持っていく。持っていったもので決まるのがベスト"}]}],
   steps:[
-   {t:"どの利用者の話かを確認する"},
-   {t:"タイムツリーに入っているか確認する。通常は営業が入れている", only:["cm","sales"]},
-   {t:"担当のケアマネジャー、居宅介護支援事業所、要介護度を、社内の記録で調べる", only:["user"],
+   {t:"対象の利用者名を確認する", only:["cm","sales"],
+    m:["通常はケアマネジャーから言ってくれる"]},
+   {t:"対象の利用者名を確認する", only:["user"]},
+   {t:"担当のケアマネジャーと居宅介護支援事業所を、社内の記録で調べる", only:["user"],
     m:["利用者には聞かない。すでに使っている人なので記録にある"]},
-   {t:"要介護度を確認する", only:["cm","sales"],
-    m:["軽度者だと特殊寝台は保険で借りられず、対応そのものが変わる"]},
    {t:"相談の内容と、困っていることを確認する"},
    {t:"営業がすでに聞いている内容を確認する。同じことを二度聞かない", only:["sales"]},
    {t:"担当営業に報告する", only:["user"],
     m:["ケアマネジャーへ誰が伝えるかは営業が決める。営業から伝えるのが多い。直接伝えてくれと言われることもある"]},
    {t:"営業の指示に従い、ケアマネジャーに連絡してプランへの位置づけを確認する。または営業から連絡してもらう", only:["user"],
     m:["プランに載って初めて保険で入れられる。先に動くと自費になる"]},
-   {t:"家屋調査の日程を確認する。通常は営業が調整してタイムツリーに入力している", only:["cm","sales"],
+
+   {t:"どういう状況で使うのかを聞き取る", only:["fixed"]},
+   {t:"卸会社に発注し、当日持っていく", only:["fixed"],
+    m:["聞き取った内容しだいでは、別商品も持っていくか検討する"]},
+
+   {t:"身体状況と家屋の状況を聞き取る", only:["half"]},
+   {t:"候補を複数選んで積む", only:["half"]},
+   {t:"現場で実際に合わせて、その場で決める", only:["half"]},
+
+   {t:"分かる範囲で状況を聞き取る", only:["vague"]},
+   {t:"候補になりうるものを複数想定して積む", only:["vague"],
+    m:["持っていったもので決まるのがベスト。どれも合わなければ、その場で選定し直すことになる"]},
+
+   {t:"訪問の日程を確認する。通常は営業が調整している", only:["cm","sales"],
     m:["いつまでに必要かを先に押さえる。退院日が決まっている案件は、そこから逆算する"]},
-   {t:"日程を利用者と決め、自分でタイムツリーに入れる", only:["user"]},
-   {t:"商品が決まっていれば納品へ、決まっていなければ選定へ進む"}],
+   {t:"訪問の日程を利用者と決める", only:["user"],
+    m:["いつまでに必要かを先に押さえる。退院日が決まっている案件は、そこから逆算する"]},
+   {t:"タイムツリーに入力する",
+    m:["自分が動く予定は自分で入れる。入っていないと、営業からは止まって見える"]}],
   done:[{t:"どの利用者の、何の話かが手元にある"},
+        {t:"訪問の日程がタイムツリーに入っている"},
         {t:"担当営業に話が入っている", only:["user"]},
         {t:"ケアマネジャーへ誰が連絡するかが決まっている", only:["user"]},
         {t:"ケアマネジャーの了解が取れている", only:["user"]},
-        {t:"日程がタイムツリーに入っている"},
-        {t:"次にどちらへ進むか（納品か選定か）を営業と合わせてある"}],
-  mine:[{t:"日程を利用者と詰めること"},
+        {t:"持っていく商品が決まり、発注が出ている", only:["fixed"]},
+        {t:"候補を複数積んである", only:["half","vague"]}],
+  mine:[{t:"何を何台積むか", only:["half","vague"]},
+        {t:"現場で合わせて決めること", only:["half"]},
         {t:"社内の記録を自分で調べること", only:["user"]},
         {t:"事前情報が足りないときに、営業へ聞き直すこと"}],
   ask:[{t:"これまでにケアマネジャーと決まっていることがないか。営業に聞く", only:["cm","sales"]},
        {t:"ケアマネジャーへ誰が連絡するか。営業に確認する", only:["user"]},
+       {t:"別商品も持っていくか迷うとき。営業に相談する", only:["fixed"]},
        {t:"急ぎの度合い。退院日や施設からの戻りがあるか。営業に聞く"}],
   stuck:[{c:"利用者に電話がつながらない", a:"時間帯を変えて、その日のうちにもう一度かける。2日つながらなければ営業に一報し、ケアマネジャー経由を相談する"},
-         {c:"事前情報がほとんどない", a:"手ぶらで行かず、汎用の用具とカタログを積む。現地で聞き取る前提に切り替える"},
          {c:"社内の記録に見当たらない", only:["user"], a:"他事業所の利用者か、記録が入る前の案件かもしれない。営業に確認する"},
-         {c:"ケアマネジャーが難色を示した", only:["user"], a:"勝手に進めない。自費での提案に切り替えられるか、営業に相談する"}],
+         {c:"ケアマネジャーが難色を示した", only:["user"], a:"勝手に進めない。自費での提案に切り替えられるか、営業に相談する"},
+         {c:"持っていったものがどれも合わない", only:["half","vague"], a:"その場で選び直す。判断がつかなければ、写真と実測値を残して持ち帰る"},
+         {c:"状況がまったく聞き取れない", only:["vague"], a:"手ぶらで行かない。汎用の用具とカタログを積み、現地で聞き取る前提に切り替える"}],
   good:[{t:"受けた時点で、足りない情報を自分から営業に聞きに行く"},
         {t:"利用者から直接来た話も、まず営業に入れる", only:["user"]},
-        {t:"分かることは自分で調べてから動く", only:["user"]}],
+        {t:"分かることは自分で調べてから動く", only:["user"]},
+        {t:"持っていったもので決める。二度行かない", only:["half","vague"]}],
   bad:[{t:"情報が足りないまま現場へ行き、結局やり直しになる"},
        {t:"営業に入れずにケアマネジャーへ直接動いて、話が食い違う", only:["user"]},
-       {t:"記録を見れば分かることを利用者に聞いて、不安にさせる", only:["user"]}]},
+       {t:"記録を見れば分かることを利用者に聞いて、不安にさせる", only:["user"]},
+       {t:"1台だけ持っていって合わず、持ち帰って出直す", only:["half","vague"]}]},
 
  {name:"家屋調査に行くとき",
   steps:[
-   {t:"あらかじめ営業担当に、事前の情報があるか確認する。介護度、課題、家屋の状況など"},
+   {t:"あらかじめ営業担当に、事前の情報があるか確認する。介護度、課題、家屋の状況など",
+    m:["介護度は選定に効く。軽度者だと特殊寝台は保険で借りられず、対応そのものが変わる"]},
    {t:"事前情報がある場合は、当たりをつけた用具を選び、車に積む"},
    {t:"現地にて、起き上がり、立ち上がり、移乗、歩行を中心に身体状況を見る"},
    {t:"家族の介護状況を確認する"},
@@ -596,9 +629,17 @@ function link(html){
 const toc = document.getElementById('toc');
 const main = document.getElementById('scenes');
 
-/* 項目は文字列でも {t,only} でもよい。only があれば、その経路のときだけ出す */
+/* 項目は文字列でも {t,only} でもよい。
+   only に軸の選択肢idを書くと、その選択のときだけ出る。軸ごとに別々に効く。 */
 const asItem = (x) => (typeof x === 'string' ? { t: x } : x);
-const keep = (x, route) => !x.only || route === 'all' || x.only.includes(route);
+function keep(sc, x, state){
+  if (!x.only || !sc.axes) return true;
+  for (const ax of sc.axes) {
+    const ids = x.only.filter((o) => ax.opts.some((p) => p.id === o));
+    if (ids.length && !ids.includes(state[ax.id])) return false;
+  }
+  return true;
+}
 const allText = (sc) => [sc.name, sc.lead || '']
   .concat(sc.steps.map((s) => s.t + ' ' + (s.m || []).join(' ')))
   .concat((sc.done || []).map((x) => asItem(x).t))
@@ -607,32 +648,28 @@ const allText = (sc) => [sc.name, sc.lead || '']
   .concat((sc.good || []).map((x) => asItem(x).t))
   .concat((sc.bad || []).map((x) => asItem(x).t))
   .concat((sc.stuck || []).map((x) => (Array.isArray(x) ? x.join(' ') : x.c + ' ' + x.a)))
-  .concat((sc.routes || []).map((r) => r.label + ' ' + r.note))
+  .concat((sc.axes || []).flatMap((a) => a.opts.map((o) => o.label + ' ' + o.note)))
   .join(' ').replace(/\s+/g, ' ');
 
-function routeTag(sc, item, route){
-  if (!item.only || route !== 'all' || !sc.routes) return '';
-  const names = item.only.map((o) => (sc.routes.find((r) => r.id === o) || {}).label || o);
-  return '<span class="only">' + esc(names.join('・')) + 'のとき</span>';
-}
-
-function bodyHTML(sc, id, route){
-  const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(x, route));
+function bodyHTML(sc, id, state){
+  const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
   let h = '';
   if (sc.lead) h += '<p class="lead">' + esc(sc.lead) + '</p>';
-  if (sc.routes) {
-    const cur = sc.routes.find((r) => r.id === route);
-    h += '<div class="routes" role="group" aria-label="依頼の出どころ">' +
-      sc.routes.map((r) => '<button type="button" data-r="' + r.id + '"' +
-        (route === r.id ? ' class="on"' : '') + '>' + esc(r.label) + '</button>').join('') +
-      '</div>' +
-      (cur ? '<p class="routenote">' + esc(cur.note) + '</p>' : '');
+  if (sc.axes) {
+    h += '<div class="axes">' + sc.axes.map((ax) => {
+      const cur = ax.opts.find((o) => o.id === state[ax.id]);
+      return '<div class="axis"><span class="axislabel">' + esc(ax.label) + '</span>' +
+        '<div class="routes" role="group" aria-label="' + esc(ax.label) + '">' +
+        ax.opts.map((o) => '<button type="button" data-ax="' + ax.id + '" data-r="' + o.id + '"' +
+          (state[ax.id] === o.id ? ' class="on"' : '') + '>' + esc(o.label) + '</button>').join('') +
+        '</div>' + (cur ? '<p class="routenote">' + esc(cur.note) + '</p>' : '') + '</div>';
+    }).join('') + '</div>';
   }
 
-  const steps = sc.steps.filter((s) => keep(s, route));
+  const steps = sc.steps.filter((s) => keep(sc, s, state));
   h += '<ol class="steps">';
   steps.forEach((s) => {
-    h += '<li><div><p>' + link(esc(s.t)) + routeTag(sc, s, route) + '</p>' +
+    h += '<li><div><p>' + link(esc(s.t)) + '</p>' +
       (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></li>';
   });
   h += '</ol>';
@@ -642,30 +679,30 @@ function bodyHTML(sc, id, route){
     h += '<div class="done"><h4>完了の条件<span>これが全部そろって終わり</span></h4><ul>' +
       done.map((d) =>
         '<li><label><input type="checkbox" id="' + id + '-d' + hash(d.t) + '"><span>' +
-        esc(d.t) + routeTag(sc, d, route) + '</span></label></li>').join('') +
+        esc(d.t) + '</span></label></li>').join('') +
       '</ul><button class="reset" type="button" data-reset="' + id + '">チェックを消す</button></div>';
   }
   const mine = pick(sc.mine), ask = pick(sc.ask);
   if (mine.length || ask.length) {
     h += '<div class="judge"><div><h4>自分で決めてよい</h4><ul>' +
-      mine.map((x) => '<li>' + esc(x.t) + routeTag(sc, x, route) + '</li>').join('') +
+      mine.map((x) => '<li>' + esc(x.t) + '</li>').join('') +
       '</ul></div><div><h4>確認してから動く</h4><ul class="ask">' +
-      ask.map((x) => '<li>' + esc(x.t) + routeTag(sc, x, route) + '</li>').join('') + '</ul></div></div>';
+      ask.map((x) => '<li>' + esc(x.t) + '</li>').join('') + '</ul></div></div>';
   }
   const stuck = (sc.stuck || [])
     .map((x) => (Array.isArray(x) ? { c: x[0], a: x[1] } : x))
-    .filter((x) => keep(x, route));
+    .filter((x) => keep(sc, x, state));
   if (stuck.length) {
     h += '<div class="stuck"><h4>詰まったとき</h4><ol>' +
-      stuck.map((x) => '<li><span class="case">' + esc(x.c) + routeTag(sc, x, route) + '</span>' +
+      stuck.map((x) => '<li><span class="case">' + esc(x.c) + '</span>' +
         '<span class="arrow" aria-hidden="true">▶</span><span>' + esc(x.a) + '</span></li>').join('') +
       '</ol></div>';
   }
   const good = pick(sc.good), bad = pick(sc.bad);
   if (good.length || bad.length) {
     h += '<div class="eyes"><h4>この場面で、営業から見ると</h4><dl>' +
-      good.map((x) => '<dt>助かる</dt><dd>' + esc(x.t) + routeTag(sc, x, route) + '</dd>').join('') +
-      bad.map((x) => '<dt class="bad">困る</dt><dd class="bad">' + esc(x.t) + routeTag(sc, x, route) + '</dd>').join('') +
+      good.map((x) => '<dt>助かる</dt><dd>' + esc(x.t) + '</dd>').join('') +
+      bad.map((x) => '<dt class="bad">困る</dt><dd class="bad">' + esc(x.t) + '</dd>').join('') +
       '</dl></div>';
   }
   if (!(sc.done && sc.done.length)) {
@@ -687,15 +724,18 @@ SCENES.forEach((sc, i) => {
   el.id = id;
   el.dataset.text = allText(sc);
   el.innerHTML = '<header><span class="n">' + (i + 1) + '</span><h3>' + esc(sc.name) + '</h3>' +
-    (sc.routes ? '<span class="tag">経路で切り替え</span>' :
+    (sc.axes ? '<span class="tag">場合で切り替え</span>' :
       (sc.done && sc.done.length ? '' : '<span class="tag">手順のみ</span>')) +
     '</header><div class="body"></div>';
   const body = el.querySelector('.body');
-  body.innerHTML = bodyHTML(sc, id, sc.routes ? sc.routes[0].id : 'all');
+  const state = {};
+  (sc.axes || []).forEach((ax) => { state[ax.id] = ax.opts[0].id; });
+  body.innerHTML = bodyHTML(sc, id, state);
   body.addEventListener('click', (e) => {
     const b = e.target.closest('.routes button');
     if (!b) return;
-    body.innerHTML = bodyHTML(sc, id, b.dataset.r);
+    state[b.dataset.ax] = b.dataset.r;
+    body.innerHTML = bodyHTML(sc, id, state);
     restoreChecks(body);
   });
   main.appendChild(el);
