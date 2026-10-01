@@ -162,7 +162,7 @@ a{color:var(--accent)}
 }
 .steps p{margin:0}
 .steps .memo{
-  margin:5px 0 0; padding-left:15px; position:relative;
+  margin:5px 0 0 16px; padding-left:15px; position:relative;
   color:var(--accent); font-size:13.5px; line-height:1.75;
 }
 .steps .memo::before{content:"※"; position:absolute; left:0; font-size:12px; opacity:.85}
@@ -250,15 +250,15 @@ a{color:var(--accent)}
   color:var(--accent); font-weight:700;
   border-bottom:1px dotted var(--accent);
 }
-.term::after{content:"BE"; font-size:9px; margin-left:3px; vertical-align:1px}
-.term[aria-expanded="true"]::after{content:"B4"}
+.term::after{content:"▾"; font-size:9px; margin-left:3px; vertical-align:1px}
+.term[aria-expanded="true"]::after{content:"▴"}
 .termbox{
   margin:7px 0 2px; padding:9px 13px; border-left:2px solid var(--accent);
   background:var(--accent-soft); border-radius:0 2px 2px 0;
 }
 .termbox ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px}
 .termbox li{position:relative; padding-left:13px; font-size:13.5px; line-height:1.7}
-.termbox li::before{content:"FB"; position:absolute; left:0; color:var(--accent)}
+.termbox li::before{content:"・"; position:absolute; left:0; color:var(--accent)}
 
 /* ---- 詰まったとき ---- */
 .stuck{margin:20px 0 0}
@@ -401,7 +401,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:22</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:26</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
