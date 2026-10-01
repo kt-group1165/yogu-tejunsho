@@ -78,6 +78,11 @@ a{color:var(--accent)}
 }
 .search button:hover{color:var(--ink)}
 .hits{color:var(--ink2); font-size:12px; white-space:nowrap}
+.ver{
+  font-family:var(--font-head); font-size:11px; font-weight:500; letter-spacing:.04em;
+  color:var(--accent); background:var(--accent-soft); border:1px solid var(--rule);
+  padding:3px 9px; border-radius:2px; white-space:nowrap; font-variant-numeric:tabular-nums;
+}
 
 /* ---- 全体の並び ---- */
 .wrap{max-width:1180px; margin:0 auto; padding:0 20px; padding-block:26px 64px;
@@ -216,7 +221,22 @@ a{color:var(--accent)}
 .axes{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px 22px;
   margin:0 0 16px; padding:12px 14px 10px; border:1px solid var(--rule); border-radius:3px;
   background:var(--chip)}
-.axes.inline{margin:12px 0 10px; border-left:3px solid var(--accent)}
+/* 手順の中の分岐。枠も塗りもなし。手順の行と同じ骨格 */
+.axrow{
+  display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px;
+  padding:9px 0; border-top:1px solid var(--rule2);
+}
+.axrow .mark{
+  font-family:var(--font-head); font-size:12px; font-weight:700; color:var(--accent);
+  border:1px solid var(--accent); border-radius:2px;
+  text-align:center; line-height:20px; height:22px; margin-top:3px;
+}
+.axrow-head{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:1px}
+.axislabel.inline{display:inline; margin:0; letter-spacing:.06em; color:var(--ink)}
+.routes.small{margin:0; gap:5px}
+.routes.small button{font-size:12px; padding:3px 10px}
+.memo.plain::before{content:""}
+.memo.plain{padding-left:0; margin-top:6px}
 .axis{min-width:0}
 .axislabel{display:block; font-family:var(--font-head); font-size:11px; font-weight:700;
   letter-spacing:.1em; color:var(--ink2); margin-bottom:6px}
@@ -276,6 +296,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 15:26</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -680,24 +701,36 @@ function bodyHTML(sc, id, state){
   const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
   let h = '';
   if (sc.lead) h += '<p class="lead">' + esc(sc.lead) + '</p>';
-  const axisBox = (ax, inline) => {
+  const btns = (ax, cls) => '<div class="routes' + (cls ? ' ' + cls : '') +
+    '" role="group" aria-label="' + esc(ax.label) + '">' +
+    ax.opts.map((o) => '<button type="button" data-ax="' + ax.id + '" data-r="' + o.id + '"' +
+      (state[ax.id] === o.id ? ' class="on"' : '') + '>' + esc(o.label) + '</button>').join('') +
+    '</div>';
+
+  const axisBox = (ax) => {
     const cur = ax.opts.find((o) => o.id === state[ax.id]);
-    return '<div class="axes' + (inline ? ' inline' : '') + '"><div class="axis">' +
-      '<span class="axislabel">' + esc(ax.label) + '</span>' +
-      '<div class="routes" role="group" aria-label="' + esc(ax.label) + '">' +
-      ax.opts.map((o) => '<button type="button" data-ax="' + ax.id + '" data-r="' + o.id + '"' +
-        (state[ax.id] === o.id ? ' class="on"' : '') + '>' + esc(o.label) + '</button>').join('') +
-      '</div>' + (cur ? '<p class="routenote">' + esc(cur.note) + '</p>' : '') + '</div></div>';
+    return '<div class="axes"><div class="axis">' +
+      '<span class="axislabel">' + esc(ax.label) + '</span>' + btns(ax) +
+      (cur ? '<p class="routenote">' + esc(cur.note) + '</p>' : '') + '</div></div>';
   };
 
-  (sc.axes || []).filter((ax) => !ax.inline).forEach((ax) => { h += axisBox(ax, false); });
+  /* 手順の中に挟む分岐。手順の行と同じ骨格にして、目立たせない */
+  const axisRow = (ax) => {
+    const cur = ax.opts.find((o) => o.id === state[ax.id]);
+    return '<div class="axrow"><span class="mark" aria-hidden="true">？</span><div>' +
+      '<div class="axrow-head"><span class="axislabel inline">' + esc(ax.label) + '</span>' +
+      btns(ax, 'small') + '</div>' +
+      (cur ? '<p class="memo plain">' + esc(cur.note) + '</p>' : '') + '</div></div>';
+  };
+
+  (sc.axes || []).filter((ax) => !ax.inline).forEach((ax) => { h += axisBox(ax); });
 
   h += '<div class="steps">';
   let n = 0;
   sc.steps.forEach((s) => {
     if (s.axis) {
       const ax = sc.axes.find((a) => a.id === s.axis);
-      if (ax && axisOn(sc, ax, state)) h += axisBox(ax, true);
+      if (ax && axisOn(sc, ax, state)) h += axisRow(ax);
       return;
     }
     if (!keep(sc, s, state)) return;
