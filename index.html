@@ -194,8 +194,8 @@ a{color:var(--accent)}
 
 /* ---- 手順の中から呼ぶ共通の工程 ---- */
 .partrow{
-  display:block; padding:10px 14px 10px 40px; border-top:1px solid var(--rule2);
-  background:var(--chip); border-radius:3px; margin:2px 0;
+  display:block; margin:0 0 0 40px; padding:7px 0 7px 13px;
+  border-left:2px solid var(--rule); border-top:0;
 }
 .partrow .mark{display:none}
 .partrow .mark{
@@ -443,14 +443,15 @@ body[data-view="flow"] .wrap, body[data-view="quiz"] .wrap{grid-template-columns
 }
 .aside > div:first-of-type{margin-top:12px}
 .moreb{
-  margin:3px 0 0 16px; padding:0 1px; cursor:pointer;
-  border:0; border-bottom:1px dotted var(--accent); background:transparent;
-  font:inherit; font-size:13.5px; font-weight:700; color:var(--accent);
+  border:0; background:transparent; cursor:pointer; font:inherit;
+  margin-left:5px; padding:0 4px; line-height:1; color:var(--accent); opacity:.75;
 }
-.moreb::after{content:"▾"; font-size:9px; margin-left:3px; vertical-align:1px}
+.moreb::after{content:"▾"; font-size:10px}
+.moreb[aria-expanded="true"]{opacity:1}
 .moreb[aria-expanded="true"]::after{content:"▴"}
+.moreb:hover{opacity:1}
 .mored{
-  margin:6px 0 2px 16px; padding:9px 13px;
+  margin:6px 0 2px; padding:9px 13px;
   border-left:2px solid var(--accent); background:var(--accent-soft); border-radius:0 2px 2px 0;
 }
 .mored p{margin:0; font-size:13px; line-height:1.75; color:var(--ink2)}
@@ -494,8 +495,8 @@ body[data-view="flow"] .wrap, body[data-view="quiz"] .wrap{grid-template-columns
   background:var(--chip)}
 /* 手順の中の分岐。枠も塗りもなし。手順の行と同じ骨格 */
 .axrow{
-  display:block; padding:10px 14px 10px 40px; border-top:1px solid var(--rule2);
-  background:var(--chip); border-radius:3px; margin:2px 0;
+  display:block; margin:0 0 0 40px; padding:7px 0 7px 13px;
+  border-left:2px solid var(--rule); border-top:0;
 }
 .axrow .mark{display:none}
 .axrow .mark{
@@ -601,7 +602,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
   .scene > header{padding:12px 15px}
   .asidebtn{width:calc(100% + 30px); margin:20px -15px 0; padding:10px 15px}
   .aside{margin:0 -15px; padding:4px 15px 2px}
-  .axrow, .partrow{padding-left:28px; padding-right:10px}
+  .axrow, .partrow{margin-left:28px; padding-left:11px}
   .routes.small button{font-size:11.5px; padding:3px 8px}
 }
 @media print{
@@ -618,7 +619,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 22:02</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 22:04</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -2246,7 +2247,7 @@ const allText = (sc) => [sc.name, sc.lead || '']
   .join(' ').replace(/\s+/g, ' ');
 
 /* [[用語]] をボタンにして、説明の箱を同じ行の下にぶら下げる */
-function terms(html){
+function terms(html, tail){
   const keys = [];
   const out = html.replace(/\[\[(.+?)\]\]/g, (m, raw) => {
     const i = raw.indexOf('|');
@@ -2259,7 +2260,7 @@ function terms(html){
   const boxes = keys.filter((k) => TERMS[k]).map((k) =>
     '<div class="termbox" data-t="' + esc(k) + '" hidden><ul>' +
     TERMS[k].map((v) => '<li>' + esc(v) + '</li>').join('') + '</ul></div>').join('');
-  return out + '</p>' + boxes;
+  return out + (tail || '') + '</p>' + boxes;
 }
 
 let ASIDE = false;
@@ -2267,10 +2268,10 @@ try { ASIDE = localStorage.getItem('tejun-aside') === '1'; } catch (e) {}
 
 function bodyHTML(sc, id, state){
   const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
-  const more = (x) => (x.d && x.d.length
-    ? '<button class="moreb" type="button" aria-expanded="false">補足</button>' +
-      '<div class="mored" hidden>' + x.d.map((t) => '<p>' + esc(t) + '</p>').join('') + '</div>'
-    : '');
+  const moreMark = (x) => (x.d && x.d.length
+    ? '<button class="moreb" type="button" aria-expanded="false" aria-label="補足を開く"></button>' : '');
+  const moreBox = (x) => (x.d && x.d.length
+    ? '<div class="mored" hidden>' + x.d.map((t) => '<p>' + esc(t) + '</p>').join('') + '</div>' : '');
   let h = '';
   if (sc.lead) h += '<p class="lead">' + esc(sc.lead) + '</p>';
   const btns = (ax, cls) => '<div class="routes' + (cls ? ' ' + cls : '') +
@@ -2317,8 +2318,8 @@ function bodyHTML(sc, id, state){
     if (s.by) {
       if (!keep(sc, s, state)) return;
       h += '<div class="bystep"><span class="who">' + esc(s.by) + '</span><div><p>' +
-        terms(link(esc(s.t))) +
-        (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + more(s) + '</div></div>';
+        terms(link(esc(s.t)), moreMark(s)) + moreBox(s) +
+        (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></div>';
       return;
     }
     if (s.sec) {
@@ -2337,8 +2338,9 @@ function bodyHTML(sc, id, state){
     }
     if (!keep(sc, s, state)) return;
     n++;
-    h += '<div class="step"><span class="num">' + n + '</span><div><p>' + terms(link(esc(s.t))) +
-      (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + more(s) + '</div></div>';
+    h += '<div class="step"><span class="num">' + n + '</span><div><p>' +
+      terms(link(esc(s.t)), moreMark(s)) + moreBox(s) +
+      (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></div>';
   });
   h += '</div>';
   h += (sc.steps.length
@@ -2734,7 +2736,7 @@ main.addEventListener('click', (e) => {
   }
   const ob = e.target.closest('.moreb');
   if (ob) {
-    const d = ob.nextElementSibling;
+    const d = ob.closest('p').nextElementSibling;
     d.hidden = !d.hidden;
     ob.setAttribute('aria-expanded', String(!d.hidden));
     return;
