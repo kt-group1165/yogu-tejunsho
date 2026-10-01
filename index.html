@@ -314,7 +314,12 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
   .cat.open .cathead{color:var(--accent)}
   .catlist{display:none; padding:0 0 6px; background:var(--chip)}
   .cat.open .catlist{display:block}
-  .index .catlist a{padding:11px 14px 11px 22px; border-left:0; min-height:44px; align-items:center}
+  /* 狭い画面では番号を本文と同じ行に流す。2列にすると折り返しが早くなる */
+  .index .catlist a{
+    display:block; padding:11px 14px 11px 16px; border-left:0; min-height:44px;
+    font-size:13.5px; line-height:1.55;
+  }
+  .index .catlist a em{display:inline-block; min-width:1.5em; margin-right:4px}
   .index .catlist a.on{background:var(--accent-soft)}
   .index .note{margin-top:14px}
   .judge{grid-template-columns:minmax(0,1fr)}
@@ -342,7 +347,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 15:59</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:02</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -929,10 +934,10 @@ const CATS = [
   { name: '事故と苦情', n: [15, 16] },
   { name: '販売と住宅改修', n: [17, 18] },
 ];
-CATS.forEach((c, ci) => {
+CATS.forEach((c) => {
   const li = document.createElement('li');
-  li.className = 'cat' + (ci === 0 ? ' open' : '');
-  li.innerHTML = '<button class="cathead" type="button" aria-expanded="' + (ci === 0) + '">' +
+  li.className = 'cat';   // 最初は畳んでおく。広い画面では CSS で開いて見せる
+  li.innerHTML = '<button class="cathead" type="button" aria-expanded="false">' +
     '<span class="caret" aria-hidden="true"></span>' + esc(c.name) +
     '<span class="count">' + c.n.length + '</span></button>' +
     '<ol class="catlist">' + c.n.map((k) => {
