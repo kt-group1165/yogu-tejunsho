@@ -89,7 +89,13 @@ a{color:var(--accent)}
   display:grid; grid-template-columns:232px minmax(0,1fr); gap:38px; align-items:start}
 
 /* ---- 索引 ---- */
-.index{position:sticky; top:calc(env(safe-area-inset-top,0px) + 74px)}
+.index{position:sticky; top:calc(env(safe-area-inset-top,0px) + 74px);
+  max-height:calc(100vh - env(safe-area-inset-top,0px) - 96px);
+  max-height:calc(100dvh - env(safe-area-inset-top,0px) - 96px);
+  overflow-y:auto; overscroll-behavior:contain; padding-right:6px; scrollbar-width:thin}
+.index::-webkit-scrollbar{width:7px}
+.index::-webkit-scrollbar-thumb{background:var(--rule2); border-radius:4px}
+.index:hover::-webkit-scrollbar-thumb{background:var(--rule)}
 .index h2{
   font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:.14em;
   color:var(--ink2); margin:0 0 10px; text-transform:none;
@@ -375,7 +381,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
 /* ---- 狭い画面 ---- */
 @media (max-width:860px){
   .wrap{grid-template-columns:minmax(0,1fr); gap:20px}
-  .index{position:static}
+  .index{position:static; max-height:none; overflow:visible; padding-right:0}
   .index > ol{display:flex; flex-direction:column; gap:0;
     border:1px solid var(--rule); border-radius:3px; background:var(--surface); overflow:hidden}
   .index .cat + .cat{margin-top:0; border-top:1px solid var(--rule)}
@@ -430,7 +436,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 17:31</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 17:38</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -1106,21 +1112,25 @@ const SCENES = [
   lead:"入院の連絡は、営業担当か事務所に入ることが多い。ここでは、多くはないが外回りに直接連絡が来たときを書く。",
   steps:[
    {t:"入院の連絡を受ける", m:["CMからのことも、家族からのこともある"]},
-   {t:"入院先と、見込みの期間を聞く"},
-   {t:"用具をどうするか、その場で決めない",
-    m:["置いたままにするか引き上げるかは、期間で変わる。聞いた内容を持ち帰る"]},
+   {t:"入院日を聞く", m:["ここが請求の起点になる。入院先や退院の見込みは、こちらから聞かなくてよい"]},
+   {t:"入院の理由を聞く。たいてい向こうから言ってくれる",
+    m:["転倒か、持病の悪化か。退院後に何が変わりそうかの手がかりになる。聞き出そうとしなくてよい"]},
    {t:"営業担当と事務に連絡する", m:["自分で止められるものではない。受けたらその日のうちに流す"]},
    {t:"事務が介護ソフトに入院休止の情報を入れる", m:["これで請求が止まる。誤って引き落とすことがなくなる"]},
-   {t:"退院の連絡が入ったら再開する", m:["入院が3か月以上にならない限り、用具は置いたまま"]}],
-  done:["営業と事務に連絡してある",
+   {t:"退院の連絡が入ったら再開する", m:["入院が3か月以上にならない限り、用具は置いたまま。ふつうは引き上げの話にならない"]},
+   {t:"入院が長期（3か月以上）になりそうなときは、一度引き上げることを営業と検討する",
+    m:["ただし、置いたままにしておけば、退院後もそのまま使ってもらえる。引き上げると、そこで解約になり、他社に替わることもある",
+       "最初から帰れる見込みがないと分かっている場合は、早い段階で引き上げの話が出ることもある"]}],
+  done:["入院日を聞いてある",
+        "営業と事務に連絡してある",
         "介護ソフトに入院休止が入っている",
-        "置いたままにするか引き上げるかが決まっている"],
-  report:["入院先と、見込み期間",
-          "用具をどうしたか",
-          "退院の見込み"],
-  mine:["判断の材料を集めること"],
-  ask:["引き上げるかどうか。営業に相談する"],
-  stuck:[["入院期間が分からない","分かる範囲でCMに聞く。長引きそうなら途中で判断し直す"],
+        "長期になりそうなときは、引き上げるかどうかを営業と相談してある"],
+  report:["入院日",
+          "入院の理由。聞けた範囲で",
+          "用具をどうしたか"],
+  mine:["入院日と理由を聞き取ること"],
+  ask:["長期になったとき、引き上げるかどうか。営業に相談する"],
+  stuck:[["入院の期間が分からない","分からないまま進めてよい。たいてい分からない。長引いたら、その時点で判断し直す"],
          ["退院の連絡が来ない","こちらから確認する。入院が長引くと請求が止まったままになる"]],
   good:["入院を聞いた時点で、その日のうちに事務へ流す"],
   bad:["連絡が遅れ、入院中の利用者から引き落としてしまう"],
