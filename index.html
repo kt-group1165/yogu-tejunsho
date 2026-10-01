@@ -247,7 +247,17 @@ a{color:var(--accent)}
 }
 
 /* ---- 判断の線 ---- */
-.judge{margin:18px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:0;
+.judgewrap{margin:18px 0 0}
+.judgeh{
+  font-family:var(--font-head); font-size:13px; font-weight:700; margin:0 0 7px;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.judgeh span{font-weight:500; font-size:11.5px; color:var(--ink2); letter-spacing:.02em}
+.judge h4 em{
+  display:block; font-style:normal; font-weight:500; font-size:11px;
+  color:var(--ink2); letter-spacing:.02em; margin-top:1px;
+}
+.judge{margin:0; display:grid; grid-template-columns:1fr 1fr; gap:0;
   border:1px solid var(--rule); border-radius:3px; overflow:hidden}
 .judge > div{min-width:0}
 .judge > div + div{border-left:1px solid var(--rule)}
@@ -479,7 +489,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 20:14</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 20:24</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -522,6 +532,9 @@ const SCENES = [
    {t:"対象の利用者名を確認する", only:["user"]},
    {t:"相談の内容と、困っていることを確認する", only:["cm","sales"]},
    {t:"相談の内容、困っていること、身体状況と家屋の[[状況]]を、分かる範囲で確認する", only:["user"]},
+   {t:"いつまでに必要かを、その電話の中で確認する",
+    m:["「お願いします」とだけ言われても、急ぎかどうかは分からない。デイの開始、家族の帰省、退院など、裏に期限があることがある",
+       "ここを聞かずに切ると、自分で見積もった日程で動くことになる"]},
    {t:"CMに確認したうえで折り返す旨を伝えて、いったん電話を切る", only:["user"],
     m:["その場で請け合わない。CMの了承がないと保険では入れられない"]},
    {sec:"電話を切ったあと", only:["user"]},
@@ -599,12 +612,13 @@ const SCENES = [
         {t:"訪問の日程を利用者と決めること", only:["self"]},
         {t:"現場で合わせて決めること", only:["half"]},
         {t:"社内の記録を自分で調べること", only:["user"]},
-        {t:"事前情報が足りないときに、営業へ聞き直すこと"}],
+        {t:"事前情報が足りないときに、営業へ聞き直すこと"},
+        {t:"いつまでに必要かを、その場で聞くこと"}],
   ask:[{t:"これまでにCMと決まっていることがないか。営業に聞く", only:["cm","sales"]},
        {t:"CMへ誰が連絡するか。営業に確認する", only:["user"]},
        {t:"別商品も持っていくか迷うとき。営業に相談する", only:["fixed"]},
        {t:"指定された日時で動けないとき。営業に相談してからCMへ返す", only:["given","withcm"]},
-       {t:"急ぎの度合い。退院日や施設からの戻りがあるか。営業に聞く"}],
+       {t:"聞いた期限に間に合わないとき。営業に相談してから返す"}],
   stuck:[{c:"利用者に電話がつながらない", a:"時間帯を変えて、その日のうちにもう一度かける。2日つながらなければ営業に一報し、CM経由を相談する"},
          {c:"社内の記録に見当たらない", only:["user"], a:"他事業所の利用者か、記録が入る前の案件かもしれない。営業に確認する"},
          {c:"CMの了承が取れなかった", only:["user"], a:"利用者へはCMから伝えるので、こちらから断りの連絡はしない。自費での提案に切り替えられるかだけ、営業に相談する"},
@@ -2077,7 +2091,7 @@ function bodyHTML(sc, id, state){
   if (report.length) {
     const anyd = report.some((x) => x.d);
     h += '<div class="report"><h4>営業へ返すこと<span>' +
-      (anyd ? '押すと、書き方の例が出る' : '営業が次の判断をできる形で') + '</span></h4><ul>' +
+      '営業が次の判断をできる形で' + (anyd ? '。押すと例が出る' : '') + '</span></h4><ul>' +
       report.map((x) => (x.d
         ? '<li class="hasd"><button class="repbtn" type="button" aria-expanded="false">' +
           esc(x.t) + '</button><p class="repd" hidden>' + esc(x.d) + '</p></li>'
@@ -2085,10 +2099,11 @@ function bodyHTML(sc, id, state){
   }
   const mine = pick(sc.mine), ask = pick(sc.ask);
   if (mine.length || ask.length) {
-    h += '<div class="judge"><div><h4>自分で決めてよい</h4><ul>' +
+    h += '<div class="judgewrap"><h4 class="judgeh">判断の線<span>この2つのどちらかに分ける。迷ったら右</span></h4>' +
+      '<div class="judge"><div><h4>自分で決めてよい<em>聞かずに進める</em></h4><ul>' +
       mine.map((x) => '<li>' + esc(x.t) + '</li>').join('') +
-      '</ul></div><div><h4>確認してから動く</h4><ul class="ask">' +
-      ask.map((x) => '<li>' + esc(x.t) + '</li>').join('') + '</ul></div></div>';
+      '</ul></div><div><h4>確認してから動く<em>先に聞く。勝手に進めない</em></h4><ul class="ask">' +
+      ask.map((x) => '<li>' + esc(x.t) + '</li>').join('') + '</ul></div></div></div>';
   }
   const stuck = (sc.stuck || [])
     .map((x) => (Array.isArray(x) ? { c: x[0], a: x[1] } : x))
