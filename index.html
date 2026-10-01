@@ -194,8 +194,8 @@ a{color:var(--accent)}
 
 /* ---- 手順の中から呼ぶ共通の工程 ---- */
 .partrow{
-  display:block; padding:10px 14px 10px 40px; border-top:1px solid var(--rule2);
-  background:var(--chip); border-radius:3px; margin:2px 0;
+  display:block; margin:0 0 0 40px; padding:7px 0 7px 13px;
+  border-left:2px solid var(--accent); border-top:0;
 }
 .partrow .mark{display:none}
 .partrow .mark{
@@ -495,8 +495,8 @@ body[data-view="flow"] .wrap, body[data-view="quiz"] .wrap{grid-template-columns
   background:var(--chip)}
 /* 手順の中の分岐。枠も塗りもなし。手順の行と同じ骨格 */
 .axrow{
-  display:block; padding:10px 14px 10px 40px; border-top:1px solid var(--rule2);
-  background:var(--chip); border-radius:3px; margin:2px 0;
+  display:block; margin:0 0 0 40px; padding:7px 0 7px 13px;
+  border-left:2px solid var(--accent); border-top:0;
 }
 .axrow .mark{display:none}
 .axrow .mark{
@@ -602,7 +602,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
   .scene > header{padding:12px 15px}
   .asidebtn{width:calc(100% + 30px); margin:20px -15px 0; padding:10px 15px}
   .aside{margin:0 -15px; padding:4px 15px 2px}
-  .axrow, .partrow{padding-left:28px; padding-right:10px}
+  .axrow, .partrow{margin-left:28px; padding-left:11px}
   .routes.small button{font-size:11.5px; padding:3px 8px}
 }
 @media print{
@@ -619,7 +619,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 22:15</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 22:21</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
