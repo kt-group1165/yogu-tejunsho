@@ -285,11 +285,17 @@ a{color:var(--accent)}
   color:var(--warn); margin:0 0 8px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
 }
 .miss h4 span{font-weight:400; font-size:11px; letter-spacing:0; color:var(--ink2)}
-.miss ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px}
-.miss li{display:flex; flex-direction:column; gap:2px; padding-left:16px; position:relative}
-.miss li::before{content:"×"; position:absolute; left:0; top:1px; color:var(--warn); font-size:12px}
+.miss ol{list-style:none; margin:0; padding:0}
+.miss li + li{border-top:1px solid var(--rule)}
+.missbtn{
+  width:100%; display:flex; align-items:baseline; gap:8px;
+  border:0; background:transparent; padding:8px 0; cursor:pointer;
+  font:inherit; font-size:13.5px; line-height:1.7; color:var(--ink); text-align:left;
+}
+.missbtn .mk{color:var(--warn); font-size:12px; flex:none}
+.missbtn[aria-expanded="true"] .mt{color:var(--warn)}
 .miss .mt{font-weight:500}
-.miss .mr{color:var(--ink2); font-size:13px}
+.miss .mr{margin:0; padding:0 0 9px 19px; font-size:13.5px; line-height:1.75; color:var(--ink2)}
 .stuck{margin:20px 0 0}
 .stuck h4, .eyes h4{
   font-family:var(--font-head); font-size:12.5px; font-weight:700; margin:0 0 8px;
@@ -448,7 +454,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 18:41</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 19:13</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -1988,10 +1994,11 @@ function bodyHTML(sc, id, state){
     .map((x) => (Array.isArray(x) ? { m: x[0], r: x[1] } : x))
     .filter((x) => keep(sc, x, state));
   if (miss.length) {
-    h += '<div class="miss"><h4>よくある失敗<span>やりがちなこと。そうなると、どうなるか</span></h4><ul>' +
-      miss.map((x) => '<li><span class="mt">' + esc(x.m) + '</span>' +
-        '<span class="mr">' + esc(x.r) + '</span></li>').join('') +
-      '</ul></div>';
+    h += '<div class="miss"><h4>よくある失敗<span>押すと、そうなるとどうなるかが出る</span></h4><ol>' +
+      miss.map((x) => '<li><button class="missbtn" type="button" aria-expanded="false">' +
+        '<span class="mk" aria-hidden="true">×</span><span class="mt">' + esc(x.m) + '</span></button>' +
+        '<p class="mr" hidden>' + esc(x.r) + '</p></li>').join('') +
+      '</ol></div>';
   }
   const good = pick(sc.good), bad = pick(sc.bad);
   if (good.length || bad.length) {
@@ -2127,6 +2134,13 @@ main.addEventListener('click', (e) => {
       box.hidden = !box.hidden;
       t.setAttribute('aria-expanded', String(!box.hidden));
     }
+    return;
+  }
+  const mb = e.target.closest('.missbtn');
+  if (mb) {
+    const r = mb.nextElementSibling;
+    r.hidden = !r.hidden;
+    mb.setAttribute('aria-expanded', String(!r.hidden));
     return;
   }
   const sb = e.target.closest('.stuckbtn');
