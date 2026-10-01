@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{color-scheme:light}
+html,body{margin:0}
+body{font:14px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:#f7f7f5}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<title>外回り 場面別手順書</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+
+<style>
+/* 左に場面の索引、右に本文。索引は固定、本文は場面ごとのカード。 */
+:root{
+  --paper:#FAFAF8; --surface:#FFFFFF; --ink:#1A1D23; --ink2:#575E67;
+  --rule:#DCDDD8; --rule2:#EDEEE9;
+  --accent:#1F3864; --accent-soft:#E9EEF6;
+  --warn:#8A3A28; --warn-soft:#F8EEEB;
+  --chip:#F0F1EC;
+  --font-head:"Zen Kaku Gothic New","Yu Gothic",system-ui,sans-serif;
+  --font-body:"Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#15171A; --surface:#1B1E22; --ink:#E7E9EA; --ink2:#A0A6AD;
+    --rule:#31353B; --rule2:#24282C;
+    --accent:#93B4E6; --accent-soft:#1D2733;
+    --warn:#E0947F; --warn-soft:#2D2320;
+    --chip:#22262B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15171A; --surface:#1B1E22; --ink:#E7E9EA; --ink2:#A0A6AD;
+  --rule:#31353B; --rule2:#24282C;
+  --accent:#93B4E6; --accent-soft:#1D2733;
+  --warn:#E0947F; --warn-soft:#2D2320;
+  --chip:#22262B;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--font-body); font-size:15px; line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent)}
+
+/* ---- ヘッダー ---- */
+.top{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:30;
+  background:var(--paper); border-bottom:1px solid var(--rule);
+}
+.top-in{
+  max-width:1180px; margin:0 auto; padding:14px 20px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0}
+.brand b{font-family:var(--font-head); font-weight:700; font-size:17px; letter-spacing:.02em}
+.brand span{color:var(--ink2); font-size:11.5px; letter-spacing:.04em}
+.search{flex:1; min-width:200px; display:flex; align-items:center; gap:8px;
+  border:1px solid var(--rule); background:var(--surface); border-radius:3px; padding:0 10px}
+.search svg{flex:none; opacity:.5}
+.search input{
+  flex:1; min-width:0; border:0; background:transparent; color:inherit;
+  font:inherit; font-size:14px; padding:8px 0; outline:none;
+}
+.search button{
+  border:0; background:transparent; color:var(--ink2); font:inherit; font-size:12px;
+  cursor:pointer; padding:4px 2px;
+}
+.search button:hover{color:var(--ink)}
+.hits{color:var(--ink2); font-size:12px; white-space:nowrap}
+
+/* ---- 全体の並び ---- */
+.wrap{max-width:1180px; margin:0 auto; padding:0 20px; padding-block:26px 64px;
+  display:grid; grid-template-columns:232px minmax(0,1fr); gap:38px; align-items:start}
+
+/* ---- 索引 ---- */
+.index{position:sticky; top:calc(env(safe-area-inset-top,0px) + 74px)}
+.index h2{
+  font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:.14em;
+  color:var(--ink2); margin:0 0 10px; text-transform:none;
+}
+.index ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+.index a{
+  display:grid; grid-template-columns:22px 1fr; gap:8px; align-items:baseline;
+  padding:5px 8px 5px 0; text-decoration:none; color:var(--ink);
+  font-size:13px; line-height:1.5; border-left:2px solid transparent;
+  padding-left:10px; border-radius:0 2px 2px 0;
+}
+.index a em{font-style:normal; color:var(--ink2); font-size:12px;
+  font-variant-numeric:tabular-nums}
+.index a:hover{background:var(--rule2)}
+.index a.on{border-left-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:500}
+.index a.on em{color:var(--accent)}
+.index .note{margin-top:14px; padding-top:12px; border-top:1px solid var(--rule);
+  font-size:11.5px; color:var(--ink2); line-height:1.7}
+
+/* ---- 場面カード ---- */
+.scenes{display:flex; flex-direction:column; gap:26px; min-width:0}
+.scene{
+  background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+  scroll-margin-top:92px; overflow:hidden;
+}
+.scene > header{
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+  padding:14px 20px; border-bottom:1px solid var(--rule); background:var(--chip);
+}
+.scene > header .n{
+  font-family:var(--font-head); font-weight:700; font-size:12px; color:var(--accent);
+  letter-spacing:.1em; font-variant-numeric:tabular-nums;
+}
+.scene > header h3{
+  font-family:var(--font-head); font-weight:700; font-size:16.5px; margin:0;
+  letter-spacing:.01em; text-wrap:balance;
+}
+.scene > header .tag{
+  margin-left:auto; font-size:11px; color:var(--ink2); letter-spacing:.04em;
+}
+.body{padding:18px 20px 22px}
+.lead{margin:0 0 14px; color:var(--ink2); font-size:14px}
+
+/* ---- 手順 ---- */
+.steps{list-style:none; margin:0; padding:0; counter-reset:st}
+.steps > li{
+  display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px;
+  padding:7px 0; border-top:1px solid var(--rule2);
+}
+.steps > li:first-child{border-top:0}
+.steps > li::before{
+  counter-increment:st; content:counter(st);
+  font-family:var(--font-head); font-weight:700; font-size:12.5px;
+  color:var(--ink2); background:var(--chip); border-radius:2px;
+  text-align:center; line-height:22px; height:22px; margin-top:3px;
+  font-variant-numeric:tabular-nums;
+}
+.steps p{margin:0}
+.steps .memo{
+  margin:5px 0 0; padding-left:15px; position:relative;
+  color:var(--accent); font-size:13.5px; line-height:1.75;
+}
+.steps .memo::before{content:"※"; position:absolute; left:0; font-size:12px; opacity:.85}
+
+/* ---- 完了の条件 ---- */
+.done{
+  margin:18px 0 0; border:2px solid var(--ink); border-radius:3px; padding:13px 16px 14px;
+}
+.done h4{
+  font-family:var(--font-head); font-size:13px; font-weight:700; margin:0 0 9px;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.done h4 span{font-weight:500; font-size:11.5px; color:var(--ink2); letter-spacing:.02em}
+.done ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px}
+.done label{display:flex; gap:9px; align-items:flex-start; cursor:pointer; font-size:14px}
+.done input{margin:5px 0 0; accent-color:var(--accent); flex:none; width:15px; height:15px}
+.done input:checked + span{color:var(--ink2); text-decoration:line-through}
+.done .reset{
+  margin-top:10px; border:1px solid var(--rule); background:transparent; color:var(--ink2);
+  font:inherit; font-size:11.5px; padding:3px 9px; border-radius:2px; cursor:pointer;
+}
+.done .reset:hover{color:var(--ink); border-color:var(--ink2)}
+
+/* ---- 判断の線 ---- */
+.judge{margin:18px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:0;
+  border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.judge > div{min-width:0}
+.judge > div + div{border-left:1px solid var(--rule)}
+.judge h4{
+  font-family:var(--font-head); font-size:12.5px; font-weight:700; margin:0;
+  padding:8px 14px; background:var(--chip); border-bottom:1px solid var(--rule);
+}
+.judge ul{list-style:none; margin:0; padding:10px 14px 12px;
+  display:flex; flex-direction:column; gap:7px; font-size:13.5px; line-height:1.7}
+.judge li{padding-left:13px; position:relative}
+.judge li::before{content:""; position:absolute; left:0; top:.72em;
+  width:5px; height:5px; border-radius:50%; background:var(--ink2)}
+.judge .ask li::before{background:var(--accent)}
+
+/* ---- 詰まったとき ---- */
+.stuck{margin:20px 0 0}
+.stuck h4, .eyes h4{
+  font-family:var(--font-head); font-size:12.5px; font-weight:700; margin:0 0 8px;
+  letter-spacing:.03em;
+}
+.stuck ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+.stuck li{
+  display:grid; grid-template-columns:minmax(120px,0.9fr) 20px minmax(0,2.1fr);
+  gap:10px; align-items:start; padding:8px 0; border-top:1px solid var(--rule2);
+  font-size:13.5px; line-height:1.7;
+}
+.stuck li:first-child{border-top:1px solid var(--rule2)}
+.stuck .case{font-weight:500}
+.stuck .arrow{color:var(--ink2); text-align:center; line-height:1.7}
+
+/* ---- 営業から見ると ---- */
+.eyes{margin:20px 0 0}
+.eyes dl{margin:0; display:grid; grid-template-columns:auto minmax(0,1fr);
+  gap:1px 12px; align-items:start}
+.eyes dt{
+  font-family:var(--font-head); font-size:11.5px; font-weight:700; letter-spacing:.06em;
+  padding:5px 9px; border-radius:2px; background:var(--chip); color:var(--ink2);
+  white-space:nowrap; line-height:1.5;
+}
+.eyes dt.bad{background:var(--warn-soft); color:var(--warn)}
+.eyes dd{margin:0; padding:5px 0; font-size:13.5px; line-height:1.7}
+.eyes dd.bad{color:var(--warn)}
+
+/* ---- 未整備の印 ---- */
+.todo{
+  margin:16px 0 0; padding:9px 13px; border:1px dashed var(--rule);
+  border-radius:3px; color:var(--ink2); font-size:12.5px; line-height:1.7;
+}
+
+mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:2px}
+.empty{padding:40px 4px; color:var(--ink2); font-size:14px}
+
+/* ---- 狭い画面 ---- */
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr); gap:20px}
+  .index{position:static}
+  .index ol{display:grid; grid-template-columns:repeat(auto-fill,minmax(188px,1fr)); gap:0}
+  .judge{grid-template-columns:minmax(0,1fr)}
+  .judge > div + div{border-left:0; border-top:1px solid var(--rule)}
+  .stuck li{grid-template-columns:minmax(0,1fr); gap:2px}
+  .stuck .arrow{display:none}
+  .stuck .case{color:var(--accent)}
+}
+@media (max-width:460px){
+  .top-in{padding:12px 16px}
+  .wrap{padding:0 16px; padding-block:20px 56px}
+  .body{padding:16px 15px 20px}
+  .scene > header{padding:12px 15px}
+}
+@media print{
+  .top,.index{display:none}
+  .wrap{grid-template-columns:1fr; padding:0}
+  .scene{break-inside:avoid; border-color:#999}
+}
+</style>
+
+<div class="top">
+  <div class="top-in">
+    <div class="brand">
+      <b>外回り　場面別手順書</b>
+      <span>ケイ・ティ・グループ　福祉用具事業部</span>
+    </div>
+    <label class="search" for="q">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
+      <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
+      <button type="button" id="clear" hidden>消す</button>
+    </label>
+    <div class="hits" id="hits"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="index" aria-label="場面の索引">
+    <h2>場面</h2>
+    <ol id="toc"></ol>
+    <p class="note">場面ごとに、やることだけを順番に並べた。制度の根拠は『新人研修テキスト』を見る。</p>
+  </nav>
+  <main class="scenes" id="scenes"></main>
+</div>
+
+<script>
+const SCENES = [
+ {name:"納品の依頼があったとき",
+  lead:"ケアマネジャーから営業に依頼が入り、営業が誰を行かせるかを決める。",
+  steps:[
+   {t:"利用者の氏名、住所、連絡先を確認する。通常は営業がタイムツリーに入力している"},
+   {t:"要介護度を確認する", m:["要介護度は必ず取る。軽度者だと特殊寝台は保険で借りられず、対応そのものが変わる"]},
+   {t:"相談の内容と、困っていることを確認する"},
+   {t:"家屋調査の日程を確認する。通常は営業が調整してタイムツリーに入力している", m:["いつまでに必要かを先に押さえる。退院日が決まっている案件は、そこから逆算する"]},
+   {t:"商品が決まっていれば納品へ、決まっていなければ選定へ進む"}],
+  done:["利用者の氏名、住所、連絡先、要介護度、困りごと、必要な時期が手元にある",
+        "家屋調査の日程がタイムツリーに入っている",
+        "次にどちらへ進むか（納品か選定か）を営業と合わせてある"],
+  mine:["家屋調査の日程を利用者と詰めること","事前情報が足りないときに、営業へ聞き直すこと"],
+  ask:["これまでにケアマネジャーと決まっていることがないか。営業に聞く",
+       "急ぎの度合い。退院日や施設からの戻りがあるか。営業に聞く"],
+  stuck:[["利用者に電話がつながらない","時間帯を変えて、その日のうちにもう一度かける。2日つながらなければ営業に一報し、ケアマネジャー経由を相談する"],
+         ["事前情報がほとんどない","手ぶらで行かず、汎用の用具とカタログを積む。現地で聞き取る前提に切り替える"]],
+  good:["受けた時点で、足りない情報を自分から営業に聞きに行く"],
+  bad:["情報が足りないまま現場へ行き、結局やり直しになる"]},
+
+ {name:"家屋調査に行くとき",
+  steps:[
+   {t:"あらかじめ営業担当に、事前の情報があるか確認する。介護度、課題、家屋の状況など"},
+   {t:"事前情報がある場合は、当たりをつけた用具を選び、車に積む"},
+   {t:"現地にて、起き上がり、立ち上がり、移乗、歩行を中心に身体状況を見る"},
+   {t:"家族の介護状況を確認する"},
+   {t:"段差、動線、廊下幅、トイレ、浴室を見る"},
+   {t:"搬入経路で狭いところがあれば計測する"},
+   {t:"候補を複数挙げ、特徴と価格を伝える"},
+   {t:"選定内容を利用者とケアマネジャーに伝える"},
+   {t:"退出後、発注を行う", m:["営業には、本人と家族の温度感も添えて返す。誰が決めるのか、家族が乗り気か。営業がケアマネジャーと話すときに効く"]}],
+  done:["身体状況、家族の介護状況、家屋と搬入経路が記録に残っている",
+        "複数の候補を、特徴と価格とともに伝えてある",
+        "選定内容を利用者とケアマネジャーに伝えてある",
+        "営業に、決めた内容と本人・家族の温度感を返してある"],
+  mine:["候補を複数出すこと。そこから利用者と絞ること",
+        "搬入経路が通らないと分かったときに、別の機種へ切り替えること"],
+  ask:["これまでにケアプランで決まっている方針。ケアマネジャーに確認する",
+       "利用者の負担額が上がる選定になるとき。ケアマネジャーに確認する",
+       "保険で出るか迷う用具。営業に確認する"],
+  stuck:[["現地が事前情報と違った","その場で選定を進める。判断がつかなければ写真と実測値を残して持ち帰る"],
+         ["説明できない商品が出てきた","その場で分からないと言い、説明書を確認してから折り返す。できると言わない"],
+         ["本人と家族の希望が割れた","その場で決めず、双方の言い分を記録して営業に返す"]],
+  good:["決まっている経緯と、利用者の負担額を踏まえて提案する",
+        "分からない商品は、その場で言って説明書を確認してから折り返す",
+        "判断がつかなくても、写真と実測値を残して帰る"],
+  bad:["経緯を知らずに提案し、ケアマネジャーから営業へ話が戻る",
+       "分からないのに「できます」と答える",
+       "何もせずに帰り、営業が現場へ確認に行くことになる"]},
+
+ {name:"発注を依頼するとき",
+  steps:[
+   {t:"卸会社に在庫と配送の空き日程を確認する", m:["回答はその電話の中か、数分で返ってくる。待ちにはならない"]},
+   {t:"利用者に連絡して、日程を確定する。タイムツリーに入力する", m:["日程を先に確定させてから発注を依頼する。卸会社の空きだけ押さえても、利用者の都合が合わなければ組み直しになる"]},
+   {t:"事務に必要事項を伝え、発注を依頼する"},
+   {t:"事務が卸会社に発注する"},
+   {t:"事務が契約書、個別援助計画書などの必要書類を用意する"}],
+  done:["納品日が確定し、タイムツリーに入っている","事務への発注依頼が出ている","事務が書類を用意している"],
+  mine:["卸会社への在庫と日程の確認","利用者との日程調整"],
+  ask:["在庫がなく納期が読めないとき。営業に一報する"],
+  stuck:[["卸会社に在庫がない","代替機種を確認する。納期が読めないときは、その日のうちに営業へ伝える"],
+         ["利用者の希望日に配送枠が取れない","前後の日を2つ3つ用意してから、利用者にかけ直す"]],
+  good:["在庫がない、納期が読めないを早く伝える"],
+  bad:["黙って抱え、納品日が近づいてから問題が出る"]},
+
+ {name:"納品するとき（直納の場合）",
+  steps:[
+   {t:"前日までに、納品する商品を確認する"},
+   {t:"事務が用意した書類を受け取る", m:["書類を作るのは事務。受け取り忘れると現地で契約が結べない"]},
+   {t:"現地にて利用者にあいさつし、これから何をどの順で納品するかを、本人と家族に伝える"},
+   {t:"家具の移動が要るときは、断ってから動かす"},
+   {t:"卸会社と協力し、あるいは分担して搬入と組み立てを行う。状況によっては納品を任せ、書類の説明や受領を行う"},
+   {t:"本人に使ってもらい、高さと角度を合わせる"},
+   {t:"ベッド関連は、すき間を点検する"},
+   {t:"使用方法を、本人と家族の両方に説明する"},
+   {t:"連絡先を見えるところに残す"},
+   {t:"1週間ほどデモで使ってもらい、連絡を差し上げる旨を伝える"},
+   {t:"設置状態を写真に撮る"},
+   {t:"家具を戻し、ゴミを持ち帰る"},
+   {t:"傷がないか一緒に確認する"},
+   {t:"退室後、担当営業へ報告する", m:[
+     "何をどこに置いたか、本人が使えたか、次はいつ行くか。営業がそのままケアマネジャーへ転送できる形で書く",
+     "設置状態の写真も営業に渡す。口で説明するより速く終わる",
+     "まずいと思ったことほど、その日のうちに言う。傷、遅れ、説明が足りなかったこと。後から利用者経由で知ると、営業が謝りに行けない",
+     "報告は当日中に。営業がケアマネジャーへ返せる状態にしておくと、途中経過の確認が来なくなる"]}],
+  done:["本人が使える状態になっている","使用方法を本人と家族の両方に説明してある","設置状態の写真がある",
+        "傷の有無を利用者と一緒に確認してある","当日中に営業へ報告が届いている",
+        "デモなら、次の確認をいつ誰がするかが決まっている"],
+  mine:["高さと角度をその場で合わせること","家具を動かす範囲。断ってから動かす"],
+  ask:["現物が想定と違ったとき。営業に確認する","追加で用具が要りそうだと気づいたとき。営業に伝える"],
+  stuck:[["搬入経路が通らない","その場で入る位置を探す。入らなければ写真と寸法を残し、営業に連絡してから引き上げる"],
+         ["本人が留守だった","卸会社と待つ時間を決める。連絡がつかなければ営業に一報し、日程を組み直す"],
+         ["その場で断られた","理由を聞いて記録する。持ち帰って営業に返す"]],
+  good:["営業がそのままケアマネジャーへ転送できる形で報告する","うまくいかなかったことほど、その日のうちに伝える","その場で急な選定が出たら、納品や発注まで進める"],
+  bad:["「納品しました」だけで、営業が聞き直すことになる","あとから利用者経由で営業に伝わる","頼まれた分だけやって帰る"]},
+
+ {name:"デモから開始が決まるまで",
+  steps:[
+   {t:"デモとして置いてくる", m:["その場で開始が決まることもある。契約書は必ず持っていく"]},
+   {t:"1週間を目安に、納品者が電話で使用状況を確認する"},
+   {t:"問題がなければケアマネジャーに報告する"},
+   {t:"開始が決まる"},
+   {t:"開始が決まったことを事務に伝える"},
+   {t:"事務が卸会社に開始を伝える"},
+   {t:"事務が個別援助計画書を作る。変更のときは変更契約書も作る"},
+   {t:"利用者から書類を受領する。要る書類は「書類を受領するとき」を見る"},
+   {t:"事務から居宅介護支援事業所へ単位数を報告する"}],
+  done:["1週間を目安に使用状況を確認してある","その結果が営業に届いている","開始か中止かが決まっている",
+        "開始なら、事務への連絡と書類の受領が済んでいる"],
+  mine:["確認の電話をかけること","高さや角度の微調整で済む不具合への対応"],
+  ask:["合わないので別の機種にしたいとき。営業とケアマネジャーに確認する","中止になりそうなとき。営業に早めに伝える"],
+  stuck:[["電話がつながらない","時間帯を変えて2回かけ直す。それでも出なければ訪問を検討し、営業に一報する"],
+         ["使っていないと分かった","理由を聞く。合わないのか、状態が変わったのか。そのまま置いておかず、営業に返す"],
+         ["確認の期限を過ぎた","遅れたことを先に営業へ言う。黙って遅らせない"]],
+  good:["デモ後の適合確認まで自分でやり、結果を営業に返す","つながらないとき、時間を変えて何度かかけ、訪問も試してから相談する"],
+  bad:["デモを置いたきり確認せず、営業が利用者に聞き直す","1回かけただけで「つながりません」と回す"]},
+
+ {name:"書類を受領するとき",
+  lead:"新規、追加、一部回収、一式回収で、要る書類が違う。書類を作るのは事務。",
+  steps:[
+   {t:"種別ごとに要る書類を確認する"},
+   {t:"事務が用意した書類を受け取る"},
+   {t:"デモのときは、開始が決まってから伺う"},
+   {t:"その場で決まることに備え、契約書も持っていく"},
+   {t:"署名と押印をもらう"},
+   {t:"控えを渡す"},
+   {t:"期限内に事務へ提出する"}]},
+
+ {name:"モニタリングに行くとき（6か月に1度）",
+  steps:[
+   {t:"予定時期を管理する"},
+   {t:"利用者に電話し、訪問の日程を調整する。その際、気になる点があればあらかじめ聞いておく"},
+   {t:"怪しい用具があれば、メンテナンス品や交換品をあらかじめ用意しておく。二度手間をなくす"},
+   {t:"訪問時、使用状況を前回と比べて確認する"},
+   {t:"用具を動かして点検する"},
+   {t:"ベッド関連は、すき間を点検する"},
+   {t:"消耗と破損を見る。キャスター、ゴム、ネジ、布地"},
+   {t:"利用者にも、不具合や困りごとがないか確認する"},
+   {t:"不具合があれば、その場で対応する"},
+   {t:"その場で直らなければ、メンテナンス交換を手配する"},
+   {t:"次回訪問時期を伝えて退室する"},
+   {t:"営業に報告する", m:["見直しの理由が身体状況の変化なら、そのことも渡す。次の選定の入口になる"]},
+   {t:"1日の終わりに事務所へ戻り、書類を作成してケアマネジャーに報告する"},
+   {t:"交換するときは、卸会社に在庫と日程を確認する"},
+   {t:"利用者と調整して、交換の日時を決める"},
+   {t:"再度訪問し、用具を交換する"}]},
+
+ {name:"一部解約で回収するとき",
+  steps:[
+   {t:"利用者またはケアマネジャーから、用具を使わない旨の連絡を受ける"},
+   {t:"利用者からの連絡のときは、ケアマネジャーに確認する"},
+   {t:"利用者に連絡し、日程の都合を確認する"},
+   {t:"卸会社と回収日程を調整する"},
+   {t:"事務に解約を連絡する。解約日は連絡を受けた日", m:["解約日は連絡を受けた日。回収に行った日ではない。取り違えると請求が合わなくなる"]},
+   {t:"事務が変更契約書と個別援助計画書などの必要書類を作る"},
+   {t:"回収日に訪問する"},
+   {t:"使用状況を確認する"},
+   {t:"回収する"},
+   {t:"書類を受領する。要る書類は「書類を受領するとき」を見る"},
+   {t:"営業に報告する。営業からケアマネジャーに報告する", m:["解約の理由が身体状況の変化なら、そのことも渡す。次の選定の入口になる"]},
+   {t:"事務から居宅介護支援事業所へ単位数変更報告書を送る"}]},
+
+ {name:"全部解約のとき（原則、直回収。立ち会いなし）",
+  steps:[
+   {t:"全部回収の依頼を受ける"},
+   {t:"利用者からの連絡のときは、ケアマネジャーに確認する"},
+   {t:"ケアマネジャーがよいと言えば、利用者と日程を調整する"},
+   {t:"卸会社だけ行かせる日程を組む"},
+   {t:"集金が要るときは同行する"},
+   {t:"卸会社が回収する"},
+   {t:"卸会社から報告を受ける"},
+   {t:"ケアマネジャーに報告する"},
+   {t:"担当営業に報告する。担当営業からケアマネジャーに報告する"}]},
+
+ {name:"別商品への変更のとき",
+  steps:[
+   {t:"ケアマネジャーから変更の依頼がある。あるいは変更の必要性を自分で見つける"},
+   {t:"自分で見つけた場合は、ケアマネジャーに伝え、プランへの位置づけを確認する"},
+   {t:"新しい機種を選ぶ"},
+   {t:"卸会社に在庫と日程を確認する。利用者と調整して日程を決め、タイムツリーに入力する"},
+   {t:"事務に発注を依頼する。同時に解約も依頼する", m:["発注だけ出して解約を忘れると、二重に請求が立つ"]},
+   {t:"事務が変更契約書と個別援助計画書を作る"},
+   {t:"入替の日に訪問する。引き上げと設置を同じ日に行う", m:["空白の日を作らない。ベッドを引き上げて次が来ないと、その晩に寝る場所がなくなる"]},
+   {t:"書類を受領する。要る書類は「書類を受領するとき」を見る"},
+   {t:"退室後、営業に報告する。営業からケアマネジャーに報告する"},
+   {t:"事務から居宅介護支援事業所へ単位数変更報告書を送る"}]},
+
+ {name:"故障の連絡が入ったとき",
+  steps:[
+   {t:"電話で症状を聞く。いつから、どういう状態か、音や動きはあるか", m:["緊急性を判断する。高ければすぐに動く"]},
+   {t:"卸会社に在庫と日程を確認する。利用者と日程を調整する"},
+   {t:"代替機を積んで訪問する"},
+   {t:"原因を探る。ただし基本はメンテナンス交換で対応する", m:["利用者は、交換したほうが安心する"]},
+   {t:"引き上げた用具は卸会社に戻す"},
+   {t:"営業に報告する。営業からケアマネジャーに報告する", m:["メンテナンス交換なら用具の変更がないので、書類は発生しない。ケアマネジャーへの単位数の報告も要らない"]}]},
+
+ {name:"入院の連絡が入ったとき（営業担当に連絡が入ることが多い）",
+  steps:[
+   {t:"ケアマネジャーから入院について知らされる"},
+   {t:"営業担当と事務に連絡する"},
+   {t:"事務が介護ソフトに入院休止の情報を入れる", m:["これで請求が止まる。誤って引き落とすことがなくなる"]},
+   {t:"退院の連絡が入ったら再開する", m:["入院が3か月以上にならない限り、用具は置いたまま"]}]},
+
+ {name:"おむつ給付（毎月）",
+  lead:"千葉市と市原市。",
+  steps:[
+   {t:"対象者と数量を確認する"},
+   {t:"月1回、届ける"},
+   {t:"所定の書類を作る"},
+   {t:"期限までに市役所へ持参する", m:["提出期限は市によって違う。1か月でも遅れると、その月分が出ない"]}]},
+
+ {name:"集金に行くとき",
+  steps:[
+   {t:"月の初めに、事務から引き落とし不能の一覧を受け取る"},
+   {t:"訪問の日程を調整する"},
+   {t:"現金で集金する", m:["亡くなられたと分かったら口座は凍結される。引き落としをかけず、ご家族に相談する"]},
+   {t:"領収書を渡す"},
+   {t:"事務に入金する"}]},
+
+ {name:"事故が起きたとき",
+  steps:[
+   {t:"けがの有無を確かめる"},
+   {t:"必要なら救急とご家族に連絡する"},
+   {t:"現場を写真に残す。用具は動かさない"},
+   {t:"その日のうちに上司に報告する"},
+   {t:"所定の様式で報告書を作る"},
+   {t:"事業所で保管する"}]},
+
+ {name:"苦情を受けたとき",
+  steps:[
+   {t:"最後まで聞く"},
+   {t:"その場で応じることと、持ち帰ることを分ける"},
+   {t:"いつまでに返すかを伝える"},
+   {t:"上司に報告する"},
+   {t:"対応の記録を残す"}]},
+
+ {name:"特定福祉用具販売のとき",
+  steps:[
+   {t:"ケアマネジャーまたは利用者から依頼を受ける"},
+   {t:"利用者からの依頼のときは、ケアマネジャーにも納品して問題ないか確認する"},
+   {t:"年度10万円の枠の残額を役所に確認する", m:["選定より先に確認する。枠が残っていない状態で提案すると、全額自己負担になる"]},
+   {t:"訪問して選定し、金額を伝える"},
+   {t:"デモ機を貸し出す"},
+   {t:"使用状況に問題がなければ、事務に発注を依頼する。見積書を準備しておく"},
+   {t:"事前申請が要る保険者は、購入前に申請する"},
+   {t:"納品し、使い方を説明する"},
+   {t:"領収書を渡す"},
+   {t:"支給申請書を作り、必要書類を添えて提出する"}]},
+
+ {name:"住宅改修のとき",
+  steps:[
+   {t:"相談を受ける"},
+   {t:"生涯20万円の枠の残額を確認する"},
+   {t:"施工会社と同行して現地調査に行く"},
+   {t:"工事の範囲を決める"},
+   {t:"施工会社の見積を基に、自社の見積を作る"},
+   {t:"見積を提示して承諾を得る"},
+   {t:"住宅改修が必要な理由書を書く"},
+   {t:"事前申請の書類一式を揃えて役所に出す"},
+   {t:"受理を確認する", m:["出しただけでは足りない。受理される前に着工すると、支給されない"]},
+   {t:"着工前の写真を撮る。日付入り"},
+   {t:"工事前に立ち会う"},
+   {t:"工事後に立ち会う"},
+   {t:"完了後の写真を撮る。日付入り"},
+   {t:"事後申請の書類を出す"}]}
+];
+
+const esc = (s) => s.replace(/[&<>]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const nameToId = new Map(SCENES.map((s, i) => [s.name, 's' + (i + 1)]));
+
+// 本文に出てくる「場面名」を、その場面へのリンクにする
+function link(html){
+  for (const [nm, id] of nameToId) {
+    html = html.split('「' + esc(nm) + '」').join('「<a href="#' + id + '">' + esc(nm) + '</a>」');
+  }
+  return html;
+}
+
+const toc = document.getElementById('toc');
+const main = document.getElementById('scenes');
+
+SCENES.forEach((sc, i) => {
+  const id = 's' + (i + 1);
+  const li = document.createElement('li');
+  li.innerHTML = '<a href="#' + id + '" data-id="' + id + '"><em>' + (i + 1) + '</em><span>' + esc(sc.name) + '</span></a>';
+  toc.appendChild(li);
+
+  const full = !!(sc.done && sc.done.length);
+  const el = document.createElement('section');
+  el.className = 'scene';
+  el.id = id;
+  el.dataset.text = (sc.name + ' ' + (sc.lead || '') + ' ' +
+    sc.steps.map((s) => s.t + ' ' + (s.m || []).join(' ')).join(' ') + ' ' +
+    [].concat(sc.done || [], sc.mine || [], sc.ask || [], sc.good || [], sc.bad || [],
+      (sc.stuck || []).map((p) => p.join(' '))).join(' ')).replace(/\s+/g, ' ');
+
+  let h = '<header><span class="n">' + (i + 1) + '</span><h3>' + esc(sc.name) + '</h3>' +
+    (full ? '' : '<span class="tag">手順のみ</span>') + '</header><div class="body">';
+  if (sc.lead) h += '<p class="lead">' + esc(sc.lead) + '</p>';
+  h += '<ol class="steps">';
+  sc.steps.forEach((s) => {
+    h += '<li><div><p>' + link(esc(s.t)) + '</p>' +
+      (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></li>';
+  });
+  h += '</ol>';
+
+  if (sc.done && sc.done.length) {
+    h += '<div class="done"><h4>完了の条件<span>これが全部そろって終わり</span></h4><ul>' +
+      sc.done.map((d, k) =>
+        '<li><label><input type="checkbox" id="' + id + '-d' + k + '"><span>' + esc(d) + '</span></label></li>').join('') +
+      '</ul><button class="reset" type="button" data-reset="' + id + '">チェックを消す</button></div>';
+  }
+  if ((sc.mine && sc.mine.length) || (sc.ask && sc.ask.length)) {
+    h += '<div class="judge"><div><h4>自分で決めてよい</h4><ul>' +
+      (sc.mine || []).map((t) => '<li>' + esc(t) + '</li>').join('') +
+      '</ul></div><div><h4>確認してから動く</h4><ul class="ask">' +
+      (sc.ask || []).map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul></div></div>';
+  }
+  if (sc.stuck && sc.stuck.length) {
+    h += '<div class="stuck"><h4>詰まったとき</h4><ol>' +
+      sc.stuck.map((p) => '<li><span class="case">' + esc(p[0]) + '</span>' +
+        '<span class="arrow" aria-hidden="true">▶</span><span>' + esc(p[1]) + '</span></li>').join('') +
+      '</ol></div>';
+  }
+  if ((sc.good && sc.good.length) || (sc.bad && sc.bad.length)) {
+    h += '<div class="eyes"><h4>この場面で、営業から見ると</h4><dl>' +
+      (sc.good || []).map((t) => '<dt>助かる</dt><dd>' + esc(t) + '</dd>').join('') +
+      (sc.bad || []).map((t) => '<dt class="bad">困る</dt><dd class="bad">' + esc(t) + '</dd>').join('') +
+      '</dl></div>';
+  }
+  if (!full) {
+    h += '<p class="todo">この場面は手順だけ。完了の条件、判断の線、詰まったとき、営業から見るとは、これから足す。</p>';
+  }
+  h += '</div>';
+  el.innerHTML = h;
+  main.appendChild(el);
+});
+
+/* ---- チェックの保存。消えても困らない範囲にとどめる ---- */
+const KEY = 'tejun-check';
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { saved = {}; }
+document.querySelectorAll('.done input').forEach((b) => {
+  if (saved[b.id]) b.checked = true;
+  b.addEventListener('change', () => {
+    saved[b.id] = b.checked;
+    try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+  });
+});
+document.querySelectorAll('[data-reset]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#' + btn.dataset.reset + ' .done input').forEach((b) => {
+      b.checked = false; saved[b.id] = false;
+    });
+    try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+  });
+});
+
+/* ---- 検索 ---- */
+const q = document.getElementById('q');
+const hits = document.getElementById('hits');
+const clearBtn = document.getElementById('clear');
+const cards = [...document.querySelectorAll('.scene')];
+const links = [...document.querySelectorAll('#toc a')];
+const empty = document.createElement('p');
+empty.className = 'empty';
+empty.hidden = true;
+empty.textContent = '見つかりません。別の言葉で探してください。';
+main.appendChild(empty);
+
+function unmark(root){
+  root.querySelectorAll('mark').forEach((m) => {
+    const t = document.createTextNode(m.textContent);
+    m.replaceWith(t);
+  });
+  root.normalize();
+}
+function markAll(root, term){
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const todo = [];
+  while (w.nextNode()) {
+    const n = w.currentNode;
+    if (n.parentElement.closest('mark')) continue;
+    if (n.nodeValue.toLowerCase().includes(term)) todo.push(n);
+  }
+  todo.forEach((n) => {
+    const frag = document.createDocumentFragment();
+    let rest = n.nodeValue, idx;
+    while ((idx = rest.toLowerCase().indexOf(term)) !== -1) {
+      if (idx) frag.appendChild(document.createTextNode(rest.slice(0, idx)));
+      const m = document.createElement('mark');
+      m.textContent = rest.slice(idx, idx + term.length);
+      frag.appendChild(m);
+      rest = rest.slice(idx + term.length);
+    }
+    if (rest) frag.appendChild(document.createTextNode(rest));
+    n.replaceWith(frag);
+  });
+}
+
+function run(){
+  const term = q.value.trim().toLowerCase();
+  clearBtn.hidden = !term;
+  let n = 0;
+  cards.forEach((c, i) => {
+    unmark(c);
+    const hit = !term || c.dataset.text.toLowerCase().includes(term);
+    c.hidden = !hit;
+    links[i].parentElement.hidden = !hit;
+    if (hit) { n++; if (term) markAll(c, term); }
+  });
+  empty.hidden = n !== 0;
+  hits.textContent = term ? n + ' / ' + cards.length + ' 場面' : cards.length + ' 場面';
+}
+q.addEventListener('input', run);
+clearBtn.addEventListener('click', () => { q.value = ''; run(); q.focus(); });
+run();
+
+/* ---- いまどの場面を見ているか ---- */
+const io = new IntersectionObserver((es) => {
+  es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.classList.toggle('on', a.dataset.id === e.target.id));
+  });
+}, { rootMargin: '-90px 0px -65% 0px' });
+cards.forEach((c) => io.observe(c));
+</script>
+
+</body>
+</html>
