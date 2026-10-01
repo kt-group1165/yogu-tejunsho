@@ -177,6 +177,20 @@ a{color:var(--accent)}
 }
 .done .reset:hover{color:var(--ink); border-color:var(--ink2)}
 
+/* ---- 営業へ返すこと ---- */
+.report{margin:18px 0 0; padding:2px 0 2px 15px; border-left:3px solid var(--accent)}
+.report h4{
+  font-family:var(--font-head); font-size:13px; font-weight:700; margin:0 0 7px;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.report h4 span{font-weight:500; font-size:11.5px; color:var(--ink2); letter-spacing:.02em}
+.report ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px}
+.report li{position:relative; padding-left:15px; font-size:14px; line-height:1.75}
+.report li::before{
+  content:""; position:absolute; left:0; top:.82em;
+  width:7px; height:1.5px; background:var(--accent);
+}
+
 /* ---- 判断の線 ---- */
 .judge{margin:18px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:0;
   border:1px solid var(--rule); border-radius:3px; overflow:hidden}
@@ -301,7 +315,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 15:33</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 15:44</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -329,10 +343,10 @@ const SCENES = [
     opts:[{id:"cm",label:"CMから",note:"営業に入り、営業が誰を行かせるか決める。いちばん多い形"},
           {id:"user",label:"利用者・家族から",note:"すでに使っている利用者から直接かかってくる"},
           {id:"sales",label:"営業から",note:"営業が訪問先で拾ってきた話"}]},
-   {id:"fix", label:"商品の決まり具合", inline:true, only:["cm","sales"],
-    opts:[{id:"fixed",label:"決まっている",note:"品番まで決まっている。発注して持っていく"},
-          {id:"half",label:"ある程度決まっている",note:"種目は決まっているが機種は未定。複数持っていって現場で合わせる"},
-          {id:"vague",label:"ざっくりしか分からない",note:"候補を想定して持っていく。持っていったもので決まるのがベスト"}]},
+   {id:"fix", label:"商品の指定", inline:true, only:["cm","sales"],
+    opts:[{id:"fixed",label:"ピンポイントの指定",note:"品番まで決まっている。発注して持っていく"},
+          {id:"half",label:"ある程度のイメージがある",note:"種目は決まっているが機種は未定。複数持っていって現場で合わせる"},
+          {id:"vague",label:"決まっていない（困りごとのみ）",note:"候補を想定して持っていく。持っていったもので決まるのがベスト"}]},
    {id:"sched", label:"日程の決まり方", inline:true, only:["cm","sales"],
     opts:[{id:"self",label:"こちらで調整",note:"「そっちで利用者と調整して納品して」と言われた場合"},
           {id:"given",label:"日時の指定あり",note:"「○月○日の何時に来て」と言われた場合"},
@@ -387,6 +401,12 @@ const SCENES = [
         {t:"持っていく商品が決まり、発注が出ている", only:["fixed"]},
         {t:"候補を複数積んである", only:["half","vague"]},
         {t:"候補を複数積んである", only:["user"]}],
+  report:[{t:"どの利用者の、何の相談か"},
+          {t:"何が分かっていて、何が分からないか"},
+          {t:"利用者は何を希望しているか"},
+          {t:"現場で何が起きているか"},
+          {t:"いつまでに必要か"},
+          {t:"次に自分が何をするか、いつやるか"}],
   mine:[{t:"何を何台積むか", only:["half","vague"]},
         {t:"何を何台積むか", only:["user"]},
         {t:"訪問の日程を利用者と決めること", only:["self"]},
@@ -436,6 +456,11 @@ const SCENES = [
         "複数の候補を、特徴と価格とともに伝えてある",
         "選定内容を利用者とCMに伝えてある",
         "営業に、決めた内容と本人・家族の温度感を返してある"],
+  report:["本人、家族、家屋で見てきたこと",
+          "何を選んだか。なぜそれを選んだか",
+          "本人と家族の温度感。誰が決めるのか",
+          "分からなかったこと、持ち帰ったこと",
+          "次に自分が何をするか、いつやるか"],
   mine:["候補を複数出すこと。そこから利用者と絞ること",
         "搬入経路が通らないと分かったときに、別の機種へ切り替えること"],
   ask:["これまでにケアプランで決まっている方針。CMに確認する",
@@ -459,6 +484,9 @@ const SCENES = [
    {t:"事務が卸会社に発注する"},
    {t:"事務が契約書、個別援助計画書などの必要書類を用意する"}],
   done:["納品日が確定し、タイムツリーに入っている","事務への発注依頼が出ている","事務が書類を用意している"],
+  report:["納品日がいつに決まったか",
+          "在庫や納期で引っかかったこと",
+          "次に自分が何をするか、いつやるか"],
   mine:["卸会社への在庫と日程の確認","利用者との日程調整"],
   ask:["在庫がなく納期が読めないとき。営業に一報する"],
   stuck:[["卸会社に在庫がない","代替機種を確認する。納期が読めないときは、その日のうちに営業へ伝える"],
@@ -489,6 +517,11 @@ const SCENES = [
   done:["本人が使える状態になっている","使用方法を本人と家族の両方に説明してある","設置状態の写真がある",
         "傷の有無を利用者と一緒に確認してある","当日中に営業へ報告が届いている",
         "デモなら、次の確認をいつ誰がするかが決まっている"],
+  report:["何を、どこに置いたか",
+          "本人が使えたか。使えなかったなら何が合わなかったか",
+          "説明したこと。伝わっていないと感じたこと",
+          "まずいと思ったこと。傷、遅れ、説明が足りなかったこと",
+          "次はいつ、誰が行くか"],
   mine:["高さと角度をその場で合わせること","家具を動かす範囲。断ってから動かす"],
   ask:["現物が想定と違ったとき。営業に確認する","追加で用具が要りそうだと気づいたとき。営業に伝える"],
   stuck:[["搬入経路が通らない","その場で入る位置を探す。入らなければ写真と寸法を残し、営業に連絡してから引き上げる"],
@@ -510,6 +543,10 @@ const SCENES = [
    {t:"事務から居宅介護支援事業所へ単位数を報告する"}],
   done:["1週間を目安に使用状況を確認してある","その結果が営業に届いている","開始か中止かが決まっている",
         "開始なら、事務への連絡と書類の受領が済んでいる"],
+  report:["使えているか、使えていないか。その理由",
+          "開始か、中止か",
+          "利用者と家族の反応",
+          "次に自分が何をするか、いつやるか"],
   mine:["確認の電話をかけること","高さや角度の微調整で済む不具合への対応"],
   ask:["合わないので別の機種にしたいとき。営業とCMに確認する","中止になりそうなとき。営業に早めに伝える"],
   stuck:[["電話がつながらない","時間帯を変えて2回かけ直す。それでも出なければ訪問を検討し、営業に一報する"],
@@ -711,6 +748,7 @@ const allText = (sc) => [sc.name, sc.lead || '']
   .concat((sc.done || []).map((x) => asItem(x).t))
   .concat((sc.mine || []).map((x) => asItem(x).t))
   .concat((sc.ask || []).map((x) => asItem(x).t))
+  .concat((sc.report || []).map((x) => asItem(x).t))
   .concat((sc.good || []).map((x) => asItem(x).t))
   .concat((sc.bad || []).map((x) => asItem(x).t))
   .concat((sc.stuck || []).map((x) => (Array.isArray(x) ? x.join(' ') : x.c + ' ' + x.a)))
@@ -767,6 +805,11 @@ function bodyHTML(sc, id, state){
         '<li><label><input type="checkbox" id="' + id + '-d' + hash(d.t) + '"><span>' +
         esc(d.t) + '</span></label></li>').join('') +
       '</ul><button class="reset" type="button" data-reset="' + id + '">チェックを消す</button></div>';
+  }
+  const report = pick(sc.report);
+  if (report.length) {
+    h += '<div class="report"><h4>営業へ返すこと<span>営業が次の判断をできる形で</span></h4><ul>' +
+      report.map((x) => '<li>' + esc(x.t) + '</li>').join('') + '</ul></div>';
   }
   const mine = pick(sc.mine), ask = pick(sc.ask);
   if (mine.length || ask.length) {
