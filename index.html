@@ -312,8 +312,9 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
   }
   .cat.open .cathead .caret{transform:rotate(45deg)}
   .cat.open .cathead{color:var(--accent)}
-  .catlist{display:none; padding:0 0 6px; background:var(--chip)}
-  .cat.open .catlist{display:block}
+  /* .index ol のほうが詳細度が高いので、こちらも .index から書く */
+  .index .catlist{display:none; padding:0 0 6px; background:var(--chip)}
+  .index .cat.open .catlist{display:block}
   /* 狭い画面では番号を本文と同じ行に流す。2列にすると折り返しが早くなる */
   .index .catlist a{
     display:block; padding:11px 14px 11px 16px; border-left:0; min-height:44px;
@@ -347,7 +348,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:02</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:06</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -480,7 +481,7 @@ const SCENES = [
   lead:"新規の利用者に納品する前に、お宅へ伺うプロセス。家屋の状況、利用者の身体状況、家族の介護状況を確認し、その人の生活に必要な用具を一通り選定する。レンタルだけでなく、特定福祉用具販売と住宅改修も含めて見る。",
   steps:[
    {t:"あらかじめ営業担当に、事前の情報があるか確認する。介護度、課題、家屋の状況など",
-    m:["介護度は選定に効く。軽度者だと特殊寝台は保険で借りられず、対応そのものが変わる"]},
+    m:["情報の多さはケースバイケース。ほとんど何も分からないまま行き、現場で集めることも多い"]},
    {t:"事前情報がある場合は、当たりをつけた用具を選び、車に積む"},
    {t:"現地にて、起き上がり、立ち上がり、移乗、歩行を中心に身体状況を見る"},
    {t:"家族の介護状況を確認する"},
