@@ -334,6 +334,24 @@ a{color:var(--accent)}
 }
 .eyes .bad .only, dd.bad .only{background:var(--warn-soft); color:var(--warn)}
 
+/* ---- 次の場面への案内 ---- */
+.next{
+  margin:20px 0 0; padding:11px 14px; border:1px solid var(--rule);
+  border-radius:3px; background:var(--chip);
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+}
+.next h4{
+  font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:.1em;
+  color:var(--ink2); margin:0;
+}
+.next ul{list-style:none; margin:0; padding:0; display:flex; gap:14px; flex-wrap:wrap}
+.next a{
+  font-family:var(--font-head); font-size:14px; font-weight:700;
+  color:var(--accent); text-decoration:none;
+}
+.next a::after{content:"　▸"; font-size:11px}
+.next a:hover{text-decoration:underline}
+
 /* ---- 未整備の印 ---- */
 .todo{
   margin:16px 0 0; padding:9px 13px; border:1px dashed var(--rule);
@@ -401,7 +419,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:37</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 16:43</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -423,17 +441,17 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
 <script>
 const SCENES = [
  {name:"納品の依頼があったとき（追加納品の場合）",
-  lead:"すでに使っている利用者に、用具を足す話。どこから来たかで最初にやることが変わる。",
+  lead:"既存の利用者に用具を追加する場合。",
   axes:[
-   {id:"from", label:"依頼の出どころ",
-    opts:[{id:"cm",label:"CMから",note:"営業に入り、営業が誰を行かせるか決める。いちばん多い形"},
+   {id:"from", label:"依頼元は？",
+    opts:[{id:"cm",label:"CMから",note:"CMから直接連絡が入る。関係性ができてくると増えてくる"},
           {id:"user",label:"利用者・家族から",note:"すでに使っている利用者から直接かかってくる"},
-          {id:"sales",label:"営業から",note:"営業が訪問先で拾ってきた話"}]},
-   {id:"fix", label:"CMから商品の指定", inline:true, only:["cm","sales"],
+          {id:"sales",label:"営業から",note:"CMから営業に入り、営業が誰を行かせるかを決める。いちばん多い形"}]},
+   {id:"fix", label:"CMから商品の指定は？", inline:true, only:["cm","sales"],
     opts:[{id:"fixed",label:"ピンポイントの指定",note:"品番まで決まっている。発注して持っていく"},
           {id:"half",label:"ある程度のイメージがある",note:"「こういう特徴のもの」「幅広の車いす」のようにざっくりとしたイメージはあるが、機種は未定。複数持っていって現場で合わせる"},
           {id:"vague",label:"決まっていない（困りごとのみ）",note:"候補を想定して持っていく。持っていったもので決まるのがベスト"}]},
-   {id:"sched", label:"日程の決まり方", inline:true, only:["cm","sales"],
+   {id:"sched", label:"日程は？", inline:true, only:["cm","sales"],
     opts:[{id:"self",label:"こちらで調整",note:"「そっちで利用者と調整して納品して」と言われた場合"},
           {id:"given",label:"日時の指定あり",note:"「○月○日の何時に来て」と言われた場合"},
           {id:"withcm",label:"日時の指定あり（CM同行）",note:"「○月○日の何時に来て」。CMも同席する"}]}],
@@ -536,7 +554,8 @@ const SCENES = [
        {t:"記録を見れば分かることを利用者に聞いて、不安にさせる", only:["user"]},
        {t:"1台だけ持っていって合わず、持ち帰って出直す", only:["half","vague"]},
        {t:"1台だけ持っていって合わず、持ち帰って出直す", only:["user"]},
-       {t:"CMの前で「分かりません」だけで終わる", only:["withcm"]}]},
+       {t:"CMの前で「分かりません」だけで終わる", only:["withcm"]}],
+  next:["納品するとき（直納の場合）"]},
 
  {name:"家屋調査に行くとき",
   lead:"新規の利用者に納品する前に、お宅へ伺うプロセス。家屋の状況、利用者の身体状況、家族の介護状況を確認し、その人の生活に必要な用具を一通り選定する。レンタルだけでなく、特定福祉用具販売と住宅改修も含めて見る。",
@@ -588,10 +607,10 @@ const SCENES = [
  {name:"発注を依頼する", part:true,
   lead:"卸会社に在庫を押さえ、日程を決め、事務に発注を出すところまで。発注は事務が出す。",
   axes:[
-   {id:"kind", label:"案件の種別",
+   {id:"kind", label:"新規か追加か？",
     opts:[{id:"new",label:"新規",note:"初めての利用者。契約から始まる"},
           {id:"add",label:"追加",note:"すでに使っている利用者に足す"}]},
-   {id:"deliv", label:"当日の体制", inline:true,
+   {id:"deliv", label:"当日は誰が行く？", inline:true,
     opts:[{id:"alone",label:"卸会社だけで納品",note:"外回りは行かない。設置と説明は卸会社"},
           {id:"join",label:"直納に同行",note:"卸会社と現地で合流する"},
           {id:"joincm",label:"直納に同行（CMも同席）",note:"卸会社と合流し、CMも立ち会う"}]}],
@@ -925,6 +944,7 @@ const allText = (sc) => [sc.name, sc.lead || '']
   .concat((sc.mine || []).map((x) => asItem(x).t))
   .concat((sc.ask || []).map((x) => asItem(x).t))
   .concat((sc.report || []).map((x) => asItem(x).t))
+  .concat((sc.next || []).map((x) => asItem(x).t))
   .concat((sc.good || []).map((x) => asItem(x).t))
   .concat((sc.bad || []).map((x) => asItem(x).t))
   .concat((sc.stuck || []).map((x) => (Array.isArray(x) ? x.join(' ') : x.c + ' ' + x.a)))
@@ -1036,6 +1056,13 @@ function bodyHTML(sc, id, state){
   }
   if (!(sc.done && sc.done.length)) {
     h += '<p class="todo">この場面は手順だけ。完了の条件、判断の線、詰まったとき、営業から見るとは、これから足す。</p>';
+  }
+  const nx = pick(sc.next);
+  if (nx.length) {
+    h += '<div class="next"><h4>次は</h4><ul>' + nx.map((x) => {
+      const id = nameToId.get(x.t);
+      return '<li><a href="#' + (id || '') + '">' + esc(x.t) + '</a></li>';
+    }).join('') + '</ul></div>';
   }
   return h;
 }
