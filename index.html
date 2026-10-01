@@ -328,6 +328,65 @@ a{color:var(--accent)}
 }
 .bystep p{margin:0; color:var(--ink2)}
 @media (max-width:460px){ .bystep{padding-left:28px} }
+.quizwrap{margin-top:4px}
+.qscore{
+  font-family:var(--font-head); font-size:12px; color:var(--ink2);
+  margin-bottom:10px; letter-spacing:.04em;
+}
+.qscore .qnum{font-weight:700; color:var(--ink)}
+.qcard{border:1px solid var(--rule); border-radius:4px; padding:14px 15px; background:var(--chip)}
+.qkind{
+  display:inline-block; font-family:var(--font-head); font-size:10.5px; font-weight:700;
+  letter-spacing:.06em; color:var(--accent); background:var(--accent-soft);
+  border-radius:2px; padding:2px 8px;
+}
+.qhead{margin:8px 0 2px; font-size:12.5px; color:var(--ink2)}
+.qbody{margin:0 0 12px; font-size:15px; font-weight:500; line-height:1.7}
+.qopts{display:flex; flex-direction:column; gap:7px}
+.qopt{
+  text-align:left; padding:9px 12px; border:1px solid var(--rule); border-radius:3px;
+  background:var(--surface); cursor:pointer; font:inherit; font-size:13.5px; line-height:1.6;
+  color:var(--ink);
+}
+.qopt:hover:not(:disabled){border-color:var(--accent); color:var(--accent)}
+.qopt:disabled{cursor:default}
+.qopt.ok{border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:500}
+.qopt.ng{border-color:var(--warn); background:var(--warn-soft); color:var(--warn)}
+.qans{margin-top:12px; padding-top:11px; border-top:1px solid var(--rule)}
+.qmark{margin:0 0 3px; font-family:var(--font-head); font-size:13px; font-weight:700}
+.qmark.ok{color:var(--accent)}
+.qmark.ng{color:var(--warn)}
+.qwhy{margin:0 0 11px; font-size:12.5px; color:var(--ink2); line-height:1.7}
+.qnext, .qagain{
+  padding:7px 18px; border:0; border-radius:3px; cursor:pointer;
+  font:inherit; font-family:var(--font-head); font-size:13px; font-weight:700;
+  background:var(--accent); color:var(--surface);
+}
+.qend{margin-top:14px; padding:14px 15px; border:1px solid var(--rule); border-radius:4px}
+.qres{margin:0 0 10px; font-family:var(--font-head); font-size:16px; font-weight:700}
+.flow{margin:0 0 18px}
+.flowh{
+  font-family:var(--font-head); font-size:13px; font-weight:700; margin:0 0 8px;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.flowh span{font-weight:500; font-size:11.5px; color:var(--ink2); letter-spacing:.02em}
+.frow{
+  display:grid; grid-template-columns:72px minmax(0,1fr); gap:10px; align-items:baseline;
+  padding:8px 0; border-top:1px solid var(--rule2);
+}
+.flabel{
+  font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:.06em;
+  color:var(--ink2); background:var(--chip); border-radius:2px; padding:3px 0; text-align:center;
+}
+.fchain{display:flex; flex-wrap:wrap; align-items:center; gap:4px 5px}
+.fchain a{
+  color:var(--accent); text-decoration:none; font-size:13px; line-height:1.6;
+  border-bottom:1px solid var(--rule); padding-bottom:1px;
+}
+.fchain a:hover{border-bottom-color:var(--accent)}
+.fchain .fplain{font-size:13px; color:var(--ink2)}
+.fchain i{font-style:normal; color:var(--ink2); font-size:11px; opacity:.7}
+@media (max-width:460px){ .frow{grid-template-columns:60px minmax(0,1fr); gap:8px} }
 .stepsh{
   font-family:var(--font-head); font-size:13px; font-weight:700; margin:0 0 4px;
   display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
@@ -517,7 +576,7 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
       <b>外回り　場面別手順書</b>
       <span>ケイ・ティ・グループ　福祉用具事業部</span>
     </div>
-    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 20:49</span>
+    <span class="ver" id="ver" title="この版が作られた日時">版 2026-10-01 21:08</span>
     <label class="search" for="q">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
       <input id="q" type="search" placeholder="場面や言葉で探す　たとえば 解約、つながらない、タイムツリー" autocomplete="off">
@@ -538,36 +597,20 @@ mark{background:var(--accent-soft); color:inherit; padding:0 1px; border-radius:
 
 <script>
 const SCENES = [
- {name:"営業から見た、頼みやすい人と頼みにくい人",
-  lead:"営業が案件を振るかどうかは、腕前ではなく次の2つで決まる。与えられた仕事を何としてでも終わらせること。営業に負担をかけないために、自分に何ができるかを考えて動くこと。場面ごとの「営業から見ると」は、これを場面に落としたもの。",
-  steps:[],
-  good:["与えられた仕事を、最後まで終わらせる",
-        "終わらないと分かったら、自分で予定を組み替えて終わらせる",
-        "頼まれたことの、次に必要なことまでやる",
-        "分からなくても、写真や実測値など判断材料を持ち帰る",
-        "電話や訪問など、自分でできることをやってから相談する",
-        "分からないことを「できます」と言わない",
-        "どこまで分かって、何が分からないかを分けて報告する",
-        "自分で決めることと、確認が要ることを分けられる",
-        "これまでの経緯を把握してから動く",
-        "何を選んだかだけでなく、なぜ選んだかまで報告する",
-        "事前に説明書を調べるなど、自分で調べてから動く",
-        "一度の失敗を次に活かす。やり方を変える",
-        "同じことを繰り返さないよう、自分で考えて変える",
-        "1日の対応件数を、自分で増やそうとする"],
-  bad:["期限が来ているのに終わっていない",
-       "終わらないまま放置し、営業が引き取ることになる",
-       "頼まれたところで手を止める。納品後の適合確認をやらない",
-       "分からないと、現場で何もせずに帰ってくる",
-       "ろくに電話もしないまま「つながりません」と営業に回す",
-       "できないのに「できます」と言ってしまう",
-       "「分かりません」だけで、営業が現場へ行くことになる",
-       "自分で決めてよいことを営業に聞く。確認が要ることを聞かずに進める",
-       "決まっている話を知らないまま提案し、話が営業に戻ってくる",
-       "言われた商品をそのまま手配し、経緯が残らない",
-       "調べずに現場へ行き、その場で答えられない",
-       "うまくいかなかったことを「もうやらない」で終わらせる",
-       "同じことを繰り返す"]},
+ {name:"全体の流れ",
+  flow:[["新規", ["家屋調査に行くとき","発注を依頼する","納品するとき（直納の場合）","デモから開始が決まるまで","書類を受領する"]],
+        ["追加", ["納品の依頼があったとき（追加納品の場合）","発注を依頼する","納品するとき（直納の場合）","書類を受領する"]],
+        ["使っている間", ["モニタリングに行くとき（6か月に1度）","別商品への変更のとき","故障の連絡が入ったとき","入院の連絡が入ったとき"]],
+        ["折にふれて", ["サービス担当者会議に出るとき","区分変更・更新のとき","利用者が転居するとき"]],
+        ["毎月", ["おむつ給付（毎月）","集金に行くとき"]],
+        ["終わり", ["一部解約で回収するとき","全部解約のとき（原則、直回収。立ち会いなし）"]],
+        ["何かあったら", ["事故が起きたとき","苦情を受けたとき","用具の紛失や破損で、費用が出そうなとき","停電や災害のとき"]],
+        ["買う・直す", ["特定福祉用具販売のとき","住宅改修のとき"]]],
+  lead:"どの場面がどこにつながるか。場面名を押すと、その手順へ飛ぶ。",
+  steps:[]},
+
+ {name:"理解度テスト", quiz:true, steps:[],
+  lead:"手順書の中から10問出る。答えると、その場で正解と、どの場面の話かが出る。何度でもやり直せる。記録は残らないので、気楽にやってよい。"},
 
  {name:"納品の依頼があったとき（追加納品の場合）",
   lead:"既存の利用者に用具を追加する場合。",
@@ -714,7 +757,7 @@ const SCENES = [
    {t:"現地にて、[[身体状況]]、家族の[[介護状況]]、[[家屋状況]]を確認する"},
    {t:"[[搬入経路]]で狭いところがあれば計測する"},
    {t:"[[まずレンタル]]で対応できないかを考える。そのうえで、購入や工事が要らないかも見る"},
-   {t:"候補を複数挙げ、特徴と価格を伝える"},
+   {t:"候補を複数挙げ、特徴と[[負担額]]を伝える"},
    {t:"車に積んでいった用具があれば、その場で本人に使ってもらい、高さや角度を合わせる",
     d:["家屋調査の場で合わせられると、あとは納品するだけで済む","積んでいないときは、納品の日に合わせる。ここでは寸法と使う場所だけ押さえる"]},
    {t:"選定内容を利用者とCMに伝える"},
@@ -757,6 +800,10 @@ const SCENES = [
   bad:["経緯を知らずに提案し、CMから営業へ話が戻る",
        "分からないのに「できます」と答える",
        "何もせずに帰り、営業が現場へ確認に行くことになる"],
+  miss:[["用具として適切かどうかだけで選ぶ","負担額とCMのプランの意向を見ていないと、CMから営業へ話が戻る"],
+        ["思い込みで、上の機種を出す","むくみだから3モーター、のように決めつけない。いま何で安定しているかを先に見る"],
+        ["楽なほうを選んで、長さや大きさを大きめにする","そのぶん負担額が上がる。許容できる範囲で足りないかを先に試す"],
+        ["搬入経路を測らずに帰る","当日入らないことが現場で分かる。狭いところは数字で残す"]],
   next:["納品するとき（直納の場合）","特定福祉用具販売のとき","住宅改修のとき"]
  },
  {name:"発注を依頼する", part:true,
@@ -833,8 +880,15 @@ const SCENES = [
    {t:"設置状態を写真に撮る"},
    {t:"家具を戻し、ゴミを持ち帰る"},
    {t:"傷がないか一緒に確認する"},
+   {t:"その場で別の困りごとが出たら、持ち帰らずに選定まで進める",
+    m:["「また連絡します」で終わらせない。見てきた自分が決めるのがいちばん早い"],
+    d:["車に候補があれば、その場で合わせてみる",
+       "納品できそうな日も、その場で押さえておく",
+       "決めるのはCMのプラン。退室後に営業へ報告し、CMの了承が取れてから発注する",
+       "ここで止まると、営業がもう一度聞きに行くことになる"]},
    {t:"退室後、担当営業へ報告する", m:["まずいと思ったことほど、その日のうちに言う。傷、遅れ、説明が足りなかったこと。後から利用者経由で知ると、営業が謝りに行けない","報告は当日中に。営業がCMへ返せる状態にしておくと、途中経過の確認が来なくなる"], d:["何をどこに置いたか、本人が使えたか、次はいつ行くか。営業がそのままCMへ転送できる形で書く","設置状態の写真も営業に渡す。口で説明するより速く終わる"]}],
-  done:["本人が使える状態になっている","使用方法を本人と家族の両方に説明してある","設置状態の写真がある",
+  done:["本人が使える状態になっている",
+        "その場で別の困りごとが出た場合、提案まで進めて営業に返してある","使用方法を本人と家族の両方に説明してある","設置状態の写真がある",
         "傷の有無を利用者と一緒に確認してある","当日中に営業へ報告が届いている",
         "デモなら、次の確認をいつ誰がするかが決まっている"],
   report:[{t:"何を、どこに置いたか",
@@ -855,6 +909,7 @@ const SCENES = [
   good:["営業がそのままCMへ転送できる形で報告する","うまくいかなかったことほど、その日のうちに伝える","その場で急な選定が出たら、納品や発注まで進める"],
   miss:[
    ["書類を受け取らずに現地へ行く","その場で契約が結べない。もう一度行くことになる"],
+   ["別の困りごとが出たのに、「また連絡します」で帰る","見てきた自分が決めるのがいちばん早い。持ち帰ると、営業がもう一度聞きに行くことになる"],
    ["断らずに家具を動かす","あとから苦情になる。動かす前に一言かける"],
    ["本人に使ってもらわずに帰る","高さが合っていないことに、次の訪問まで気づかない"],
    ["本人にだけ説明して終わる","夜に介助する家族が、使い方を知らないまま。両方に伝える"],
@@ -926,6 +981,8 @@ const SCENES = [
    {sec:"アポ取り"},
    {t:"予定時期を管理する"},
    {t:"利用者に電話し、訪問の日程を調整する。その際、[[気になる点]]があればあらかじめ聞き、交換品を用意しておく"},
+   {t:"何度かけてもつながらないときは、近くに行く日に[[突撃訪問]]する",
+    m:["電話だけで止めない。1、2回かけただけで営業に回さない"]},
    {t:"モニタリングと同時に交換品を持っていくときには、事務に発注を依頼する",
     d:["軽いものは自分で積んでいく。重いものは卸会社に来てもらうので、訪問の日程を合わせる"]},
    {part:"発注を依頼する"},
@@ -979,10 +1036,13 @@ const SCENES = [
           {t:"交換が要るなら、いつ行くか",
            d:"例：マットレスがへたっていたので交換。◯月◯日の午後で日程を取った"},
           {t:"分かったことと、分からないままのこと", d:"分けて伝える。「分かりません」だけだと、営業が現場へ行くことになる"}],
-  mine:["高さや角度の調整","ネジの締め直しなど、その場で直せること"],
+  mine:["高さや角度の調整","ネジの締め直しなど、その場で直せること","回る順番。同じ地域はまとめて組む"],
   ask:["用具を替えたほうがよいと思ったとき。営業に相談する",
        "使われていないので解約したほうがよいとき。営業とCMに相談する"],
-  stuck:[["電話がつながらない","時間帯を変えてかけ直す。つながらないまま期限が来そうなら営業に一報する"],
+  stuck:[["電話がつながらない","時間帯を変えて、日も変えてかけ直す。朝と夕方では出やすさが違う"],
+         ["何度かけてもつながらない","近くに行く日に合わせて訪問する。会えなければ、連絡先と伺った旨を残してくる"],
+         ["突撃訪問で、嫌な顔をされた","「もうやらない」で終わらせない。アポを取った訪問と同じ入り方ではうまくいかない。最初の一言、時間帯、立ち位置のどれかを変えて、次に試す"],
+         ["訪問しても会えない。期限が近い","そこまでやってから営業に相談する。何をどこまでやったかを添えて渡す"],
          ["月内に終わりそうにない","早めに営業に言う。黙って遅らせない"],
          ["不具合がその場で直らない","交換を手配する。使えない状態なら代替機を先に置く"],
          ["その場で卸会社につながらない","利用者から候補日を2つ3つもらってから帰る。手ぶらで帰ると、調整に何日もかかる"],
@@ -992,6 +1052,8 @@ const SCENES = [
   good:["その月のぶんを月内に終わらせる","身体状況の変化を営業に渡す"],
   miss:[
    ["気になる点を聞かずに訪問する","交換品を持っておらず、もう一度行くことになる"],
+   ["1、2回電話してつながらないだけで、営業に回す","営業からは「そこまでしかやっていない」に見える。時間帯を変え、訪問も試してから相談する"],
+   ["利用者から「もう使わない」と言われ、その場で引き上げてしまう","CMが「まだ置いておいてほしかった」ということがある。一度引き上げると、もう一度入れるのは難しい。先にCMへ確認する"],
    ["「変化なし」とだけ報告する","営業は何も判断できない。前回と何を比べたのかを書く"],
    ["不具合を見つけたのに、交換日を決めずに帰る","帰ってからの電話がつながらず、日が延びる"],
    ["月内に終わらないことを黙っている","営業が催促することになる。早めに言えば予定を組み替えられる"],
@@ -1461,6 +1523,8 @@ const SCENES = [
    {t:"年度10万円の枠の残額を役所に確認する", m:["選定より先に確認する。枠が残っていない状態で提案すると、全額自己負担になる"]},
    {t:"訪問の日程を決め、タイムツリーに入力する"},
    {t:"訪問して選定し、金額を伝える"},
+   {t:"候補それぞれの、よいところと困るところを伝える",
+    m:["希望された品をそのまま手配しない。伝えたうえで利用者が選んだなら、その経緯まで営業に報告する"]},
    {t:"デモ機を貸し出す"},
    {t:"[[使用状況|使用状況（デモのあと）]]に問題がなければ、事務に発注を依頼する。見積書を準備しておく"},
    {t:"事前申請が要る保険者は、購入前に申請する"},
@@ -1487,6 +1551,8 @@ const SCENES = [
   good:["選定より先に枠を確認する"],
   miss:[
    ["枠の残額を確認せずに提案する","枠が残っていないと全額自己負担になる。選定より先に残額を見る"],
+        ["希望された品を、そのまま手配する","よいところと困るところを伝えたか、なぜそれになったかが残らない。あとで営業が説明できない"],
+        ["納品や契約が済んだことを、営業に伝えない","営業はCMに報告できない。販売は特に抜けやすい"],
    ["デモをせずに買ってもらう","合わなくても返せない。試してもらってから進める"],
    ["事前申請が要る保険者で、先に買ってしまう","支給されない。保険者ごとに違うので、先に確かめる"],
    ["領収書を渡し忘れる","申請が通らない。その場で渡す"]],
@@ -1604,7 +1670,11 @@ const SCENES = [
     d:["ここで拾った話が、次の提案の入口になる"]},
    {t:"いま入っている用具と、[[使用状況|使用状況（会議で聞かれること）]]を報告する", only:["renew"]},
    {t:"変更がなければ、短く済ませる", only:["renew"]},
-   {t:"聞かれたことに答える。分からないことは、分からないと言って持ち帰る",
+   {t:"分からないことを聞かれても、その場を止めない",
+    m:["まず分かる範囲で一つ提案し、「詳細については営業から改めてご連絡します」と伝えて前に進める"],
+    d:["完璧に答える必要はない。その場を前に進めて、次の担当につなぐのが役目",
+       "「代わりに出てほしいと聞いてきただけです」のような返し方をしない。CMには、話が止まったことだけが残る"]},
+   {t:"それでも分からないことは、分からないと言って持ち帰る",
     m:["その場で適当に答えない。「確認して、いつまでにご連絡します」と期限を切って返す"]},
    {t:"決まったことと、宿題になったことをメモする"},
    {sec:"会議のあと"},
@@ -1635,6 +1705,8 @@ const SCENES = [
        {t:"費用に関わること"},
        {t:"例外給付の対象になるかどうか。CMに確認する", only:["renew"]}],
   stuck:[{c:"日程が合わない", a:"早めにCMへ返し、営業に代理を相談する。直前に断らない"},
+         {c:"会議の場でCMから「回収してほしい」と言われた",
+          a:"CMが言っているなら、その場で営業に電話して確認しなくてよい。日程だけ決めて持ち帰る"},
          {c:"分からないことを聞かれた", a:"「確認して、明日の午前中にご連絡します」と期限を切って返す"},
          {c:"その場で決めてほしいと言われた", a:"自分で決めずに、持ち帰る旨を伝える。費用と契約に関わるものは特に"},
          {c:"用意した候補が、どれも合わなさそう", only:["yogu"],
@@ -1649,6 +1721,7 @@ const SCENES = [
         {t:"費用と納期を、聞かれる前に用意しておく", only:["yogu"]},
         {t:"場を取らず、聞かれたことに短く答える", only:["other"]}],
   bad:[{t:"経緯を知らずに出て、決まっている話を蒸し返す"},
+       {t:"CMの目の前で、確認の要らないことを営業に電話して聞く"},
        {t:"会議の結果が営業に伝わらない"},
        {t:"候補を1つだけ持っていき、合わなくて話が止まる", only:["yogu"]},
        {t:"主題ではないのに、用具の話で場を取る", only:["other"]}],
@@ -1891,6 +1964,17 @@ const SCENES = [
 
 /* 手順の中の [[用語]] を押すと開く説明。定義はここ1か所だけ */
 const TERMS = {
+  '突撃訪問': ['アポを取った訪問とは別もの。同じ入り方ではうまくいかない',
+               '近くに行く日に合わせる。そのためだけに出ない',
+               '会えなければ、連絡先と伺った旨を残してくる',
+               'うまくいかなかったときは、最初の一言、時間帯、立ち位置のどれを変えるかを考える',
+               '一度嫌な顔をされても「もうやらない」で終わらせない。やり方を変えて次に試す',
+               'ここまでやってから相談すると、営業も動きやすい'],
+  '負担額': ['毎月いくらになるか。1割か2割かでも変わる',
+             '用具としての良し悪しだけで選ばない。CMのプランの意向と、利用者の負担も一緒に見る',
+             '例：長いスロープのほうが楽に上げられるが、長くなるほど負担額も上がる。許容できる長さで足りることがある',
+             '例：むくみがあっても、クッションで安定しているなら、3モーターまで要らないことがある',
+             '決まっている話を知らずに、思い込みで上の機種を出すと、CMから営業へ話が戻る'],
   '営業に報告': ['何を選んだか。なぜそれを選んだか',
                  '本人と家族の温度感。乗り気か、渋っているか',
                  '誰が決めるのか。本人か、同居の家族か、離れて住む子か',
@@ -2143,6 +2227,14 @@ function bodyHTML(sc, id, state){
 
   (sc.axes || []).filter((ax) => !ax.inline).forEach((ax) => { h += axisBox(ax); });
 
+  if (sc.flow) {
+    h += '<div class="flow"><h4 class="flowh">全体の流れ<span>押すと、その場面へ</span></h4>' +
+      sc.flow.map((row) => '<div class="frow"><span class="flabel">' + esc(row[0]) + '</span><div class="fchain">' +
+        row[1].map((nm) => {
+          const id = nameToId.get(nm);
+          return id ? '<a href="#' + id + '">' + esc(nm) + '</a>' : '<span class="fplain">' + esc(nm) + '</span>';
+        }).join('<i aria-hidden="true">→</i>') + '</div></div>').join('') + '</div>';
+  }
   if (sc.steps.length) h += '<h4 class="stepsh">手順<span>番号の順にやる</span></h4>';
   h += '<div class="steps">';
   let n = 0;
@@ -2253,15 +2345,15 @@ function hash(s){ let n = 0; for (let i = 0; i < s.length; i++) n = (n * 31 + s.
 
 /* 目次はカテゴリに分ける。狭い画面では開閉し、広い画面では開いたまま並べる */
 const CATS = [
-  { name: 'はじめに', n: [1] },
-  { name: '用具を入れる', n: [2, 3, 5, 6] },
-  { name: '使っている間', n: [8, 11, 12, 13, 20, 21, 22] },
-  { name: '用具を引き上げる', n: [9, 10] },
-  { name: '毎月の仕事', n: [14, 15] },
-  { name: '事故と苦情', n: [16, 17, 23] },
-  { name: '停電と災害', n: [24] },
-  { name: '販売と住宅改修', n: [18, 19] },
-  { name: '共通の工程', n: [4, 7] },
+  { name: 'はじめに', n: [1, 2] },
+  { name: '用具を入れる', n: [3, 4, 6, 7] },
+  { name: '使っている間', n: [9, 12, 13, 14, 21, 22, 23] },
+  { name: '用具を引き上げる', n: [10, 11] },
+  { name: '毎月の仕事', n: [15, 16] },
+  { name: '事故と苦情', n: [17, 18, 24] },
+  { name: '停電と災害', n: [25] },
+  { name: '販売と住宅改修', n: [19, 20] },
+  { name: '共通の工程', n: [5, 8] },
 ];
 /* 番号は場面だけに振る。共通の工程は番号なし */
 const DISP = {};
@@ -2289,6 +2381,130 @@ toc.addEventListener('click', (e) => {
   b.setAttribute('aria-expanded', String(on));
 });
 
+
+/* ---- 理解度テスト。問題は上のデータから作る ---- */
+function quizPool(){
+  const judge = [], done = [], stuck = [];
+  SCENES.forEach((sc) => {
+    if (sc.quiz || !sc.steps.length) return;
+    (sc.mine || []).forEach((x) => judge.push({ t: asItem(x).t, a: 'mine', sc: sc.name }));
+    (sc.ask || []).forEach((x) => judge.push({ t: asItem(x).t, a: 'ask', sc: sc.name }));
+    (sc.done || []).forEach((x) => done.push({ t: asItem(x).t, sc: sc.name }));
+    (sc.stuck || []).forEach((x) => {
+      const y = Array.isArray(x) ? { c: x[0], a: x[1] } : x;
+      if (y.c && y.a) stuck.push({ c: y.c, a: y.a, sc: sc.name });
+    });
+  });
+  return { judge: judge, done: done, stuck: stuck };
+}
+
+function shuffle(a){
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = r[i]; r[i] = r[j]; r[j] = t;
+  }
+  return r;
+}
+
+function makeQuiz(n){
+  const pool = quizPool();
+  const qs = [];
+  shuffle(pool.judge).slice(0, Math.ceil(n * 0.5)).forEach((x) => {
+    qs.push({
+      kind: '判断の線',
+      q: x.t,
+      head: 'これは、自分で決めてよいこと？ それとも確認してから動くこと？',
+      opts: ['自分で決めてよい', '確認してから動く'],
+      ans: x.a === 'mine' ? 0 : 1,
+      why: x.sc + 'の「' + (x.a === 'mine' ? '自分で決めてよい' : '確認してから動く') + '」にある項目',
+    });
+  });
+  shuffle(pool.stuck).slice(0, Math.floor(n * 0.3)).forEach((x) => {
+    const others = shuffle(pool.stuck.filter((y) => y.a !== x.a)).slice(0, 3).map((y) => y.a);
+    const opts = shuffle([x.a].concat(others));
+    qs.push({
+      kind: '詰まったとき',
+      q: x.c,
+      head: 'こうなったとき、どうする？',
+      opts: opts,
+      ans: opts.indexOf(x.a),
+      why: x.sc + 'の「詰まったとき」にある対処',
+    });
+  });
+  shuffle(pool.done).slice(0, n - qs.length).forEach((x) => {
+    const others = shuffle(pool.done.filter((y) => y.sc !== x.sc)).slice(0, 3).map((y) => y.t);
+    const opts = shuffle([x.t].concat(others));
+    qs.push({
+      kind: '完了の条件',
+      q: x.sc,
+      head: 'この場面の「完了の条件」に入るのはどれ？',
+      opts: opts,
+      ans: opts.indexOf(x.t),
+      why: x.sc + 'の「完了の条件」にある項目',
+    });
+  });
+  return shuffle(qs);
+}
+
+function quizHTML(qs){
+  return '<div class="quizwrap"><div class="qscore"><span class="qnum">1</span> / ' + qs.length +
+    '　<span class="qright">正解 0</span></div>' +
+    qs.map((q, i) => '<div class="qcard"' + (i ? ' hidden' : '') + ' data-i="' + i + '">' +
+      '<span class="qkind">' + esc(q.kind) + '</span>' +
+      '<p class="qhead">' + esc(q.head) + '</p>' +
+      '<p class="qbody">' + esc(q.q) + '</p>' +
+      '<div class="qopts">' + q.opts.map((o, j) =>
+        '<button class="qopt" type="button" data-j="' + j + '">' + esc(o) + '</button>').join('') + '</div>' +
+      '<div class="qans" hidden><p class="qmark"></p><p class="qwhy">' + esc(q.why) + '</p>' +
+      '<button class="qnext" type="button">次へ</button></div>' +
+      '</div>').join('') +
+    '<div class="qend" hidden><p class="qres"></p>' +
+    '<button class="qagain" type="button">もう一度</button></div></div>';
+}
+
+function mountQuiz(body){
+  let qs = makeQuiz(10);
+  let right = 0, at = 0;
+  const draw = () => { body.innerHTML = quizHTML(qs); right = 0; at = 0; };
+  draw();
+  body.addEventListener('click', (e) => {
+    const card = e.target.closest('.qcard');
+    const opt = e.target.closest('.qopt');
+    if (opt && card) {
+      const i = +card.dataset.i;
+      const ok = +opt.dataset.j === qs[i].ans;
+      if (ok) right++;
+      card.querySelectorAll('.qopt').forEach((b, j) => {
+        b.disabled = true;
+        if (j === qs[i].ans) b.classList.add('ok');
+        else if (b === opt) b.classList.add('ng');
+      });
+      const ans = card.querySelector('.qans');
+      ans.hidden = false;
+      card.querySelector('.qmark').textContent = ok ? '正解' : 'ちがう';
+      card.querySelector('.qmark').className = 'qmark ' + (ok ? 'ok' : 'ng');
+      body.querySelector('.qright').textContent = '正解 ' + right;
+      return;
+    }
+    if (e.target.closest('.qnext')) {
+      card.hidden = true;
+      at++;
+      const nx = body.querySelector('.qcard[data-i="' + at + '"]');
+      if (nx) {
+        nx.hidden = false;
+        body.querySelector('.qnum').textContent = at + 1;
+      } else {
+        const end = body.querySelector('.qend');
+        end.hidden = false;
+        end.querySelector('.qres').textContent = qs.length + '問中 ' + right + '問 正解';
+      }
+      return;
+    }
+    if (e.target.closest('.qagain')) { qs = makeQuiz(10); draw(); }
+  });
+}
+
 SCENES.forEach((sc, i) => {
   const id = 's' + (i + 1);
   const el = document.createElement('section');
@@ -2298,11 +2514,17 @@ SCENES.forEach((sc, i) => {
   el.innerHTML = '<header><span class="n">' + (DISP[i + 1] || '共通') + '</span><h3>' + esc(sc.name) + '</h3>' +
     (sc.part ? '<span class="tag">いくつかの場面から呼ばれる</span>' :
       (sc.axes ? '<span class="tag">場合で切り替え</span>' :
-      (sc.done && sc.done.length ? '' : '<span class="tag">手順のみ</span>'))) +
+      (!sc.steps.length || (sc.done && sc.done.length) ? '' : '<span class="tag">手順のみ</span>'))) +
     '</header><div class="body"></div>';
   const body = el.querySelector('.body');
   const state = {};
   (sc.axes || []).forEach((ax) => { state[ax.id] = ax.opts[0].id; });
+  if (sc.quiz) {
+    body.innerHTML = '<p class="lead">' + esc(sc.lead) + '</p><div class="qhost"></div>';
+    mountQuiz(body.querySelector('.qhost'));
+    main.appendChild(el);
+    return;
+  }
   body.innerHTML = bodyHTML(sc, id, state);
   body.addEventListener('click', (e) => {
     const pb = e.target.closest('.partbtn');
