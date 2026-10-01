@@ -129,14 +129,13 @@ a{color:var(--accent)}
 .lead{margin:0 0 14px; color:var(--ink2); font-size:14px}
 
 /* ---- 手順 ---- */
-.steps{list-style:none; margin:0; padding:0; counter-reset:st}
-.steps > li{
+.steps{margin:0; padding:0}
+.steps .step{
   display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px;
   padding:7px 0; border-top:1px solid var(--rule2);
 }
-.steps > li:first-child{border-top:0}
-.steps > li::before{
-  counter-increment:st; content:counter(st);
+.steps .step:first-child{border-top:0}
+.steps .num{
   font-family:var(--font-head); font-weight:700; font-size:12.5px;
   color:var(--ink2); background:var(--chip); border-radius:2px;
   text-align:center; line-height:22px; height:22px; margin-top:3px;
@@ -217,6 +216,7 @@ a{color:var(--accent)}
 .axes{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px 22px;
   margin:0 0 16px; padding:12px 14px 10px; border:1px solid var(--rule); border-radius:3px;
   background:var(--chip)}
+.axes.inline{margin:12px 0 10px; border-left:3px solid var(--accent)}
 .axis{min-width:0}
 .axislabel{display:block; font-family:var(--font-head); font-size:11px; font-weight:700;
   letter-spacing:.1em; color:var(--ink2); margin-bottom:6px}
@@ -303,7 +303,7 @@ const SCENES = [
     opts:[{id:"cm",label:"ケアマネジャーから",note:"営業に入り、営業が誰を行かせるか決める。いちばん多い形"},
           {id:"user",label:"利用者・家族から",note:"すでに使っている利用者から直接かかってくる"},
           {id:"sales",label:"営業から",note:"営業が訪問先で拾ってきた話"}]},
-   {id:"fix", label:"商品の決まり具合",
+   {id:"fix", label:"商品の決まり具合", inline:true, only:["cm","sales"],
     opts:[{id:"fixed",label:"決まっている",note:"品番まで決まっている。発注して持っていく"},
           {id:"half",label:"ある程度決まっている",note:"種目は決まっているが機種は未定。複数持っていって現場で合わせる"},
           {id:"vague",label:"ざっくりしか分からない",note:"候補を想定して持っていく。持っていったもので決まるのがベスト"}]}],
@@ -319,6 +319,12 @@ const SCENES = [
     m:["ケアマネジャーへ誰が伝えるかは営業が決める。営業から伝えるのが多い。直接伝えてくれと言われることもある"]},
    {t:"営業の指示に従い、ケアマネジャーに連絡してプランへの位置づけを確認する。または営業から連絡してもらう", only:["user"],
     m:["プランに載って初めて保険で入れられる。先に動くと自費になる"]},
+
+   {t:"身体状況と家屋の状況を、分かる範囲で聞き取る", only:["user"]},
+   {t:"候補になりうるものを複数想定して積む", only:["user"],
+    m:["利用者からの相談で、商品まで決まっていることはない。現場で決める前提で動く"]},
+
+   {axis:"fix"},
 
    {t:"どういう状況で使うのかを聞き取る", only:["fixed"]},
    {t:"卸会社に発注し、当日持っていく", only:["fixed"],
@@ -344,8 +350,10 @@ const SCENES = [
         {t:"ケアマネジャーへ誰が連絡するかが決まっている", only:["user"]},
         {t:"ケアマネジャーの了解が取れている", only:["user"]},
         {t:"持っていく商品が決まり、発注が出ている", only:["fixed"]},
-        {t:"候補を複数積んである", only:["half","vague"]}],
+        {t:"候補を複数積んである", only:["half","vague"]},
+        {t:"候補を複数積んである", only:["user"]}],
   mine:[{t:"何を何台積むか", only:["half","vague"]},
+        {t:"何を何台積むか", only:["user"]},
         {t:"現場で合わせて決めること", only:["half"]},
         {t:"社内の記録を自分で調べること", only:["user"]},
         {t:"事前情報が足りないときに、営業へ聞き直すこと"}],
@@ -357,15 +365,19 @@ const SCENES = [
          {c:"社内の記録に見当たらない", only:["user"], a:"他事業所の利用者か、記録が入る前の案件かもしれない。営業に確認する"},
          {c:"ケアマネジャーが難色を示した", only:["user"], a:"勝手に進めない。自費での提案に切り替えられるか、営業に相談する"},
          {c:"持っていったものがどれも合わない", only:["half","vague"], a:"その場で選び直す。判断がつかなければ、写真と実測値を残して持ち帰る"},
-         {c:"状況がまったく聞き取れない", only:["vague"], a:"手ぶらで行かない。汎用の用具とカタログを積み、現地で聞き取る前提に切り替える"}],
+         {c:"持っていったものがどれも合わない", only:["user"], a:"その場で選び直す。判断がつかなければ、写真と実測値を残して持ち帰る"},
+         {c:"状況がまったく聞き取れない", only:["vague"], a:"手ぶらで行かない。汎用の用具とカタログを積み、現地で聞き取る前提に切り替える"},
+         {c:"状況がまったく聞き取れない", only:["user"], a:"手ぶらで行かない。汎用の用具とカタログを積み、現地で聞き取る前提に切り替える"}],
   good:[{t:"受けた時点で、足りない情報を自分から営業に聞きに行く"},
         {t:"利用者から直接来た話も、まず営業に入れる", only:["user"]},
         {t:"分かることは自分で調べてから動く", only:["user"]},
-        {t:"持っていったもので決める。二度行かない", only:["half","vague"]}],
+        {t:"持っていったもので決める。二度行かない", only:["half","vague"]},
+        {t:"持っていったもので決める。二度行かない", only:["user"]}],
   bad:[{t:"情報が足りないまま現場へ行き、結局やり直しになる"},
        {t:"営業に入れずにケアマネジャーへ直接動いて、話が食い違う", only:["user"]},
        {t:"記録を見れば分かることを利用者に聞いて、不安にさせる", only:["user"]},
-       {t:"1台だけ持っていって合わず、持ち帰って出直す", only:["half","vague"]}]},
+       {t:"1台だけ持っていって合わず、持ち帰って出直す", only:["half","vague"]},
+       {t:"1台だけ持っていって合わず、持ち帰って出直す", only:["user"]}]},
 
  {name:"家屋調査に行くとき",
   steps:[
@@ -632,11 +644,24 @@ const main = document.getElementById('scenes');
 /* 項目は文字列でも {t,only} でもよい。
    only に軸の選択肢idを書くと、その選択のときだけ出る。軸ごとに別々に効く。 */
 const asItem = (x) => (typeof x === 'string' ? { t: x } : x);
+function keepIn(sc, only, state, skip){
+  if (!only) return true;
+  for (const ax of sc.axes) {
+    if (ax.id === skip) continue;
+    const ids = only.filter((o) => ax.opts.some((p) => p.id === o));
+    if (ids.length && !ids.includes(state[ax.id])) return false;
+  }
+  return true;
+}
+/* 軸そのものが、いまの選択で出ているか。出ていない軸に属する項目は消す */
+const axisOn = (sc, ax, state) => keepIn(sc, ax.only, state, ax.id);
 function keep(sc, x, state){
   if (!x.only || !sc.axes) return true;
   for (const ax of sc.axes) {
     const ids = x.only.filter((o) => ax.opts.some((p) => p.id === o));
-    if (ids.length && !ids.includes(state[ax.id])) return false;
+    if (!ids.length) continue;
+    if (!axisOn(sc, ax, state)) return false;
+    if (!ids.includes(state[ax.id])) return false;
   }
   return true;
 }
@@ -655,24 +680,32 @@ function bodyHTML(sc, id, state){
   const pick = (arr) => (arr || []).map(asItem).filter((x) => keep(sc, x, state));
   let h = '';
   if (sc.lead) h += '<p class="lead">' + esc(sc.lead) + '</p>';
-  if (sc.axes) {
-    h += '<div class="axes">' + sc.axes.map((ax) => {
-      const cur = ax.opts.find((o) => o.id === state[ax.id]);
-      return '<div class="axis"><span class="axislabel">' + esc(ax.label) + '</span>' +
-        '<div class="routes" role="group" aria-label="' + esc(ax.label) + '">' +
-        ax.opts.map((o) => '<button type="button" data-ax="' + ax.id + '" data-r="' + o.id + '"' +
-          (state[ax.id] === o.id ? ' class="on"' : '') + '>' + esc(o.label) + '</button>').join('') +
-        '</div>' + (cur ? '<p class="routenote">' + esc(cur.note) + '</p>' : '') + '</div>';
-    }).join('') + '</div>';
-  }
+  const axisBox = (ax, inline) => {
+    const cur = ax.opts.find((o) => o.id === state[ax.id]);
+    return '<div class="axes' + (inline ? ' inline' : '') + '"><div class="axis">' +
+      '<span class="axislabel">' + esc(ax.label) + '</span>' +
+      '<div class="routes" role="group" aria-label="' + esc(ax.label) + '">' +
+      ax.opts.map((o) => '<button type="button" data-ax="' + ax.id + '" data-r="' + o.id + '"' +
+        (state[ax.id] === o.id ? ' class="on"' : '') + '>' + esc(o.label) + '</button>').join('') +
+      '</div>' + (cur ? '<p class="routenote">' + esc(cur.note) + '</p>' : '') + '</div></div>';
+  };
 
-  const steps = sc.steps.filter((s) => keep(sc, s, state));
-  h += '<ol class="steps">';
-  steps.forEach((s) => {
-    h += '<li><div><p>' + link(esc(s.t)) + '</p>' +
-      (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></li>';
+  (sc.axes || []).filter((ax) => !ax.inline).forEach((ax) => { h += axisBox(ax, false); });
+
+  h += '<div class="steps">';
+  let n = 0;
+  sc.steps.forEach((s) => {
+    if (s.axis) {
+      const ax = sc.axes.find((a) => a.id === s.axis);
+      if (ax && axisOn(sc, ax, state)) h += axisBox(ax, true);
+      return;
+    }
+    if (!keep(sc, s, state)) return;
+    n++;
+    h += '<div class="step"><span class="num">' + n + '</span><div><p>' + link(esc(s.t)) + '</p>' +
+      (s.m || []).map((m) => '<p class="memo">' + esc(m) + '</p>').join('') + '</div></div>';
   });
-  h += '</ol>';
+  h += '</div>';
 
   const done = pick(sc.done);
   if (done.length) {
